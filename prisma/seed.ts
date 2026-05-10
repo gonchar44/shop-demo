@@ -2,6 +2,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const categories = [
+  { id: "seed-category-apparel", slug: "apparel", name: "Apparel" },
+  { id: "seed-category-footwear", slug: "footwear", name: "Footwear" },
+  { id: "seed-category-accessories", slug: "accessories", name: "Accessories" },
+];
+
 const products = [
   {
     id: "seed-product-1",
@@ -11,7 +17,7 @@ const products = [
     priceCents: 1999,
     compareAtCents: 2499,
     currency: "USD",
-    category: "Apparel",
+    categoryId: "seed-category-apparel",
     collection: "Basics",
     style: "Casual",
     colors: ["White"],
@@ -29,7 +35,7 @@ const products = [
     description: "Modern slim fit jeans in dark wash denim.",
     priceCents: 5999,
     currency: "USD",
-    category: "Apparel",
+    categoryId: "seed-category-apparel",
     collection: "Denim",
     style: "Casual",
     colors: ["Dark Blue"],
@@ -48,7 +54,7 @@ const products = [
     priceCents: 8999,
     compareAtCents: 11999,
     currency: "USD",
-    category: "Footwear",
+    categoryId: "seed-category-footwear",
     collection: "Minimalist",
     style: "Modern",
     colors: ["White", "Black"],
@@ -68,7 +74,7 @@ const products = [
     description: "Durable canvas backpack with multiple compartments.",
     priceCents: 4499,
     currency: "USD",
-    category: "Accessories",
+    categoryId: "seed-category-accessories",
     collection: "Everyday",
     colors: ["Olive", "Navy", "Black"],
     materials: ["Canvas", "Leather"],
@@ -87,7 +93,7 @@ const products = [
     description: "Soft ribbed wool beanie for cold weather.",
     priceCents: 1499,
     currency: "USD",
-    category: "Accessories",
+    categoryId: "seed-category-accessories",
     collection: "Winter",
     style: "Casual",
     colors: ["Charcoal", "Cream", "Burgundy"],
@@ -100,6 +106,15 @@ const products = [
 ];
 
 async function main() {
+  for (const category of categories) {
+    await prisma.category.upsert({
+      where: { id: category.id },
+      update: category,
+      create: category,
+    });
+  }
+  console.log(`Seeded ${categories.length} categories.`);
+
   for (const product of products) {
     await prisma.product.upsert({
       where: { id: product.id },
