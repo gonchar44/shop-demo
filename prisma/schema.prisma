@@ -28,6 +28,47 @@ model Room {
   products Product[]
 }
 
+model Style {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  products Product[]
+}
+
+model Color {
+  id       String           @id @default(cuid())
+  slug     String           @unique
+  name     String
+  hex      String?
+  products Product[]
+  variants ProductVariant[]
+}
+
+model Material {
+  id       String           @id @default(cuid())
+  slug     String           @unique
+  name     String
+  products Product[]
+  variants ProductVariant[]
+}
+
+model ProductVariant {
+  id         String    @id @default(cuid())
+  productId  String
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String
+  sku        String?   @unique
+  colorId    String?
+  color      Color?    @relation(fields: [colorId], references: [id])
+  materialId String?
+  material   Material? @relation(fields: [materialId], references: [id])
+  priceCents Int?
+  stock      Int       @default(0)
+  image      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
 model Product {
   id             String   @id @default(cuid())
   slug           String   @unique
@@ -43,10 +84,11 @@ model Product {
   collection     Collection? @relation(fields: [collectionId], references: [id])
   roomId         String?
   room           Room?       @relation(fields: [roomId], references: [id])
-  style          String?
-
-  colors         String[]
-  materials      String[]
+  styleId        String?
+  style          Style?           @relation(fields: [styleId], references: [id])
+  colors         Color[]
+  materials      Material[]
+  variants       ProductVariant[]
   dimensions     String?
   weight         String?
 
