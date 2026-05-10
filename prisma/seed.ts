@@ -8,6 +8,21 @@ const categories = [
   { id: "seed-category-accessories", slug: "accessories", name: "Accessories" },
 ];
 
+const collections = [
+  { id: "seed-collection-basics", slug: "basics", name: "Basics" },
+  { id: "seed-collection-denim", slug: "denim", name: "Denim" },
+  { id: "seed-collection-minimalist", slug: "minimalist", name: "Minimalist" },
+  { id: "seed-collection-everyday", slug: "everyday", name: "Everyday" },
+  { id: "seed-collection-winter", slug: "winter", name: "Winter" },
+];
+
+const rooms = [
+  { id: "seed-room-living-room", slug: "living-room", name: "Living Room" },
+  { id: "seed-room-bedroom", slug: "bedroom", name: "Bedroom" },
+  { id: "seed-room-office", slug: "office", name: "Office" },
+  { id: "seed-room-outdoor", slug: "outdoor", name: "Outdoor" },
+];
+
 const products = [
   {
     id: "seed-product-1",
@@ -18,7 +33,7 @@ const products = [
     compareAtCents: 2499,
     currency: "USD",
     categoryId: "seed-category-apparel",
-    collection: "Basics",
+    collectionId: "seed-collection-basics",
     style: "Casual",
     colors: ["White"],
     materials: ["Cotton"],
@@ -36,7 +51,7 @@ const products = [
     priceCents: 5999,
     currency: "USD",
     categoryId: "seed-category-apparel",
-    collection: "Denim",
+    collectionId: "seed-collection-denim",
     style: "Casual",
     colors: ["Dark Blue"],
     materials: ["Denim", "Elastane"],
@@ -55,7 +70,7 @@ const products = [
     compareAtCents: 11999,
     currency: "USD",
     categoryId: "seed-category-footwear",
-    collection: "Minimalist",
+    collectionId: "seed-collection-minimalist",
     style: "Modern",
     colors: ["White", "Black"],
     materials: ["Leather", "Rubber"],
@@ -75,7 +90,7 @@ const products = [
     priceCents: 4499,
     currency: "USD",
     categoryId: "seed-category-accessories",
-    collection: "Everyday",
+    collectionId: "seed-collection-everyday",
     colors: ["Olive", "Navy", "Black"],
     materials: ["Canvas", "Leather"],
     weight: "800g",
@@ -94,7 +109,7 @@ const products = [
     priceCents: 1499,
     currency: "USD",
     categoryId: "seed-category-accessories",
-    collection: "Winter",
+    collectionId: "seed-collection-winter",
     style: "Casual",
     colors: ["Charcoal", "Cream", "Burgundy"],
     materials: ["Wool"],
@@ -114,6 +129,24 @@ async function main() {
     });
   }
   console.log(`Seeded ${categories.length} categories.`);
+
+  for (const collection of collections) {
+    await prisma.collection.upsert({
+      where: { id: collection.id },
+      update: collection,
+      create: collection,
+    });
+  }
+  console.log(`Seeded ${collections.length} collections.`);
+
+  for (const room of rooms) {
+    await prisma.room.upsert({
+      where: { id: room.id },
+      update: room,
+      create: room,
+    });
+  }
+  console.log(`Seeded ${rooms.length} rooms.`);
 
   for (const product of products) {
     await prisma.product.upsert({

@@ -14,6 +14,20 @@ model Category {
   products Product[]
 }
 
+model Collection {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  products Product[]
+}
+
+model Room {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  products Product[]
+}
+
 model Product {
   id             String   @id @default(cuid())
   slug           String   @unique
@@ -25,8 +39,10 @@ model Product {
 
   categoryId     String
   category       Category @relation(fields: [categoryId], references: [id])
-  collection     String?
-  room           String?
+  collectionId   String?
+  collection     Collection? @relation(fields: [collectionId], references: [id])
+  roomId         String?
+  room           Room?       @relation(fields: [roomId], references: [id])
   style          String?
 
   colors         String[]
