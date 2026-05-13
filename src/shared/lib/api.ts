@@ -58,7 +58,11 @@ export function apiGet<T>(path: string): Promise<T | undefined> {
     return apiFetch<T>(path);
 }
 
-export function apiMutate<T>(path: string, method: "POST" | "PUT" | "PATCH" | "DELETE", body?: unknown): Promise<T | undefined> {
+export function apiMutate<T>(
+    path: string,
+    method: "POST" | "PUT" | "PATCH" | "DELETE",
+    body?: unknown,
+): Promise<T | undefined> {
     return apiFetch<T>(path, {
         method,
         headers: body !== undefined ? { "Content-Type": "application/json" } : undefined,
