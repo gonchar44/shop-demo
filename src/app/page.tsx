@@ -10,7 +10,11 @@ export default async function Home() {
 
     const queryClient = getQueryClient();
 
-    await queryClient.prefetchQuery(productListServerQueryOptions(INITIAL_PRODUCT_LIST_PARAMS));
+    try {
+        await queryClient.prefetchQuery(productListServerQueryOptions(INITIAL_PRODUCT_LIST_PARAMS));
+    } catch {
+        // prefetch is best-effort; page renders from client fetch on failure
+    }
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>

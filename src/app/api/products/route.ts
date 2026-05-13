@@ -13,5 +13,10 @@ export async function GET(request: NextRequest) {
         return Response.json({ error: z.flattenError(parsed.error).fieldErrors }, { status: 400 });
     }
 
-    return Response.json(await getProductList(parsed.data));
+    try {
+        return Response.json(await getProductList(parsed.data));
+    } catch (error) {
+        console.error("Failed to fetch product list:", error);
+        return Response.json({ error: "Failed to fetch products" }, { status: 500 });
+    }
 }

@@ -8,7 +8,7 @@ export class ApiError extends Error {
     }
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+async function apiFetch<T>(path: string, init?: RequestInit): Promise<T | undefined> {
     const res = await fetch(path, init);
 
     if (!res.ok) {
@@ -17,13 +17,13 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     }
 
     if (res.status === 204) {
-        return undefined as T;
+        return undefined;
     }
 
     const text = await res.text();
 
     if (!text) {
-        return undefined as T;
+        return undefined;
     }
 
     return JSON.parse(text) as T;
@@ -54,11 +54,11 @@ async function readErrorMessage(res: Response) {
     return text;
 }
 
-export function apiGet<T>(path: string): Promise<T> {
+export function apiGet<T>(path: string): Promise<T | undefined> {
     return apiFetch<T>(path);
 }
 
-export function apiMutate<T>(path: string, method: "POST" | "PUT" | "PATCH" | "DELETE", body?: unknown): Promise<T> {
+export function apiMutate<T>(path: string, method: "POST" | "PUT" | "PATCH" | "DELETE", body?: unknown): Promise<T | undefined> {
     return apiFetch<T>(path, {
         method,
         headers: body !== undefined ? { "Content-Type": "application/json" } : undefined,
