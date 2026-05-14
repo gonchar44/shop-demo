@@ -56,9 +56,9 @@
     --gray-500: oklch(0.554 0 0);
     --gray-600: oklch(0.446 0 0);
     --gray-700: oklch(0.374 0 0);
-    --gray-800: oklch(0.270 0 0);
+    --gray-800: oklch(0.27 0 0);
     --gray-900: oklch(0.205 0 0);
-    --gray-950: oklch(0.130 0 0);
+    --gray-950: oklch(0.13 0 0);
 
     --background: var(--white);
     --foreground: var(--gray-950);
