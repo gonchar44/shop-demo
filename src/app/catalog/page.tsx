@@ -1,0 +1,35 @@
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { connection } from "next/server";
+import { productListSearchParamsSchema } from "@/features/catalog/model/product.schema";
+import { productListServerQueryOptions } from "@/features/catalog/server/product-query-options";
+import { getQueryClient } from "@/shared/lib/query-client.server";
+import { ProductList } from "@/features/catalog/ui/product-list";
+
+const CATALOG_LIMIT = 10;
+
+export default async function CatalogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+    await connection();
+
+    const { page } = productListSearchParamsSchema.parse({
+        page: (await searchParams).page,
+        limit: CATALOG_LIMIT,
+    });
+
+    const params = { page, limit: CATALOG_LIMIT };
+    const queryClient = getQueryClient();
+
+    try {
+        await queryClient.prefetchQuery(productListServerQueryOptions(params));
+    } catch {
+        // best-effort; client fetch will handle failure
+    }
+
+    return (
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <main className="min-h-screen bg-white w-10/12 mx-auto gap-y-6 flex flex-col p-6">
+                <h1 className="text-2xl font-bold text-gray-950">Products</h1>
+                <ProductList params={params} />
+            </main>
+        </HydrationBoundary>
+    );
+}
