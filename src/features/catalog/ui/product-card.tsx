@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BookmarkIcon, ImageIcon, ShoppingCartIcon } from "lucide-react";
+import { BookmarkIcon, HandbagIcon, ImageIcon } from "lucide-react";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 
@@ -49,7 +49,6 @@ export function ProductCard({ product }: ProductCardProps) {
                 )}
             </div>
 
-            {/* Wishlist button */}
             <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl">
                 <button
                     type="button"
@@ -92,7 +91,7 @@ export function ProductCard({ product }: ProductCardProps) {
                         aria-label="Add to cart"
                         className="bottom-2 right-2 absolute w-9 h-9 rounded-full bg-white flex items-center justify-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                     >
-                        <ShoppingCartIcon className="w-4 h-4 text-gray-950" />
+                        <HandbagIcon className="size-5 text-gray-950" />
                     </button>
                 </div>
             </div>
