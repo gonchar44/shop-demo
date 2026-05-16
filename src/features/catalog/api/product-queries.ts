@@ -21,5 +21,9 @@ function getProducts(params: ProductListParams) {
         limit: String(params.limit),
     });
 
+    if (params.q) {
+        searchParams.set("q", params.q);
+    }
+
     return apiGet<ProductListResponse>(`/api/products?${searchParams.toString()}`);
 }

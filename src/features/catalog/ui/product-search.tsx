@@ -1,14 +1,43 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, startTransition } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { SearchIcon, XIcon } from "lucide-react";
 
 export function ProductSearch() {
-    const [value, setValue] = useState("");
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const router = useRouter();
+
+    const [value, setValue] = useState(searchParams.get("q") ?? "");
     const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        startTransition(() => {
+            setValue(searchParams.get("q") ?? "");
+        });
+    }, [searchParams]);
+
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        const next = new URLSearchParams(searchParams.toString());
+        const trimmed = value.trim();
+        if (trimmed) {
+            next.set("q", trimmed);
+        } else {
+            next.delete("q");
+        }
+        next.set("page", "1");
+        router.push(`${pathname}?${next.toString()}`);
+    }
 
     function handleClear() {
         setValue("");
+        const next = new URLSearchParams(searchParams.toString());
+        next.delete("q");
+        next.set("page", "1");
+        router.push(`${pathname}?${next.toString()}`);
         inputRef.current?.focus();
     }
 
@@ -33,6 +62,7 @@ export function ProductSearch() {
                     spellCheck={false}
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     placeholder="Search items…"
                     className="w-full h-12 pl-11 pr-10 bg-gray-100 rounded-2xl text-sm text-gray-950 placeholder:text-gray-400 border border-transparent outline-none transition-all duration-150 focus:bg-white focus:border-gray-950 [&::-webkit-search-cancel-button]:hidden"
                 />
