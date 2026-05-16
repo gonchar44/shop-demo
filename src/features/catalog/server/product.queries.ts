@@ -3,13 +3,31 @@ import type { ProductListItem, ProductListParams, ProductListResponse } from "@/
 
 type ProductForList = Awaited<ReturnType<typeof findProductsForList>>[number];
 
+function buildProductWhere(q?: string) {
+    const searchFilter = q
+        ? {
+              OR: [
+                  { name: { contains: q, mode: "insensitive" as const } },
+                  { category: { name: { contains: q, mode: "insensitive" as const } } },
+                  { collection: { name: { contains: q, mode: "insensitive" as const } } },
+                  { room: { name: { contains: q, mode: "insensitive" as const } } },
+                  { style: { name: { contains: q, mode: "insensitive" as const } } },
+                  { colors: { some: { name: { contains: q, mode: "insensitive" as const } } } },
+                  { materials: { some: { name: { contains: q, mode: "insensitive" as const } } } },
+              ],
+          }
+        : {};
+    return { isPublished: true, ...searchFilter };
+}
+
 export async function getProductList(params: ProductListParams): Promise<ProductListResponse> {
-    const { page, limit } = params;
+    const { page, limit, q } = params;
     const skip = (page - 1) * limit;
+    const where = buildProductWhere(q);
 
     const [products, total] = await Promise.all([
-        findProductsForList(skip, limit),
-        prisma.product.count({ where: { isPublished: true } }),
+        findProductsForList(skip, limit, where),
+        prisma.product.count({ where }),
     ]);
 
     return {
@@ -25,9 +43,9 @@ export async function getProductList(params: ProductListParams): Promise<Product
     };
 }
 
-function findProductsForList(skip: number, take: number) {
+function findProductsForList(skip: number, take: number, where: ReturnType<typeof buildProductWhere>) {
     return prisma.product.findMany({
-        where: { isPublished: true },
+        where,
         select: {
             id: true,
             slug: true,

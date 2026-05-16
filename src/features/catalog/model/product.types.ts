@@ -1,6 +1,7 @@
 export type ProductListParams = {
     page: number;
     limit: number;
+    q?: string;
 };
 
 export type ProductAttribute = {

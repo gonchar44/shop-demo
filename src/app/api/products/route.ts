@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
     const parsed = productListSearchParamsSchema.safeParse({
         page: request.nextUrl.searchParams.get("page") ?? undefined,
         limit: request.nextUrl.searchParams.get("limit") ?? undefined,
+        q: request.nextUrl.searchParams.get("q") ?? undefined,
     });
 
     if (!parsed.success) {

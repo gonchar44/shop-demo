@@ -1,21 +1,24 @@
+import { Suspense } from "react";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { connection } from "next/server";
 import { productListSearchParamsSchema } from "@/features/catalog/model/product.schema";
 import { productListServerQueryOptions } from "@/features/catalog/server/product-query-options";
 import { getQueryClient } from "@/shared/lib/query-client.server";
 import { ProductList } from "@/features/catalog/ui/product-list";
+import { ProductSearch } from "@/features/catalog/ui/product-search";
 
 const CATALOG_LIMIT = 10;
 
-export default async function CatalogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+export default async function CatalogPage({ searchParams }: { searchParams: Promise<{ page?: string; q?: string }> }) {
     await connection();
 
-    const { page } = productListSearchParamsSchema.parse({
+    const { page, q } = productListSearchParamsSchema.parse({
         page: (await searchParams).page,
         limit: CATALOG_LIMIT,
+        q: (await searchParams).q,
     });
 
-    const params = { page, limit: CATALOG_LIMIT };
+    const params = { page, limit: CATALOG_LIMIT, q };
     const queryClient = getQueryClient();
 
     try {
@@ -28,6 +31,9 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
         <HydrationBoundary state={dehydrate(queryClient)}>
             <main className="min-h-screen bg-white w-10/12 mx-auto gap-y-6 flex flex-col p-6">
                 <h1 className="text-2xl font-bold text-gray-950">Products</h1>
+                <Suspense fallback={null}>
+                    <ProductSearch />
+                </Suspense>
                 <ProductList params={params} />
             </main>
         </HydrationBoundary>
