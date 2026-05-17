@@ -6,6 +6,7 @@ import { productListServerQueryOptions } from "@/features/catalog/server/product
 import { getQueryClient } from "@/shared/lib/query-client.server";
 import { ProductList } from "@/features/catalog/ui/product-list";
 import { ProductSearch } from "@/features/catalog/ui/product-search";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 const CATALOG_LIMIT = 10;
 
@@ -31,7 +32,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
         <HydrationBoundary state={dehydrate(queryClient)}>
             <main className="min-h-screen bg-white w-10/12 mx-auto gap-y-6 flex flex-col p-6">
                 <h1 className="text-2xl font-bold text-gray-950">Products</h1>
-                <Suspense fallback={null}>
+                <Suspense fallback={<Skeleton className="w-96 h-12 rounded-2xl" />}>
                     <ProductSearch />
                 </Suspense>
                 <ProductList params={params} />
