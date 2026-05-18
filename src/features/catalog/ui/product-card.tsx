@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { HandbagIcon, ImageIcon } from "lucide-react";
+import { BookmarkIcon, HandbagIcon, ImageIcon } from "lucide-react";
+import { toast } from "sonner";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
@@ -35,6 +36,13 @@ export function ProductCard({ product }: ProductCardProps) {
     const isInWishlist = useWishlistStore((s) => s.ids.includes(product.id));
     const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
 
+    function handleWishlistToggle() {
+        toggleWishlistItem(product.id);
+        toast(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
+            icon: <BookmarkIcon className="size-4" fill={isInWishlist ? "none" : "currentColor"} />,
+        });
+    }
+
     return (
         <article className="aspect-[3/4] relative w-full select-none" aria-label={name}>
             {/* Image area */}
@@ -56,7 +64,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl">
-                <WishlistButton isInWishlist={isInWishlist} onToggle={() => toggleWishlistItem(product.id)} />
+                <WishlistButton isInWishlist={isInWishlist} onToggle={handleWishlistToggle} />
             </div>
 
             {/* Info panel */}
