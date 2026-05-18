@@ -7,11 +7,11 @@ import { NavButton } from "./nav-button";
 
 type Pagination = ProductListResponse["pagination"];
 
-type Props = {
+type ProductPaginationProps = {
     pagination: Pagination;
 };
 
-export function ProductPagination({ pagination }: Props) {
+export function ProductPagination({ pagination }: ProductPaginationProps) {
     const { page, totalPages, hasNext, hasPrev } = pagination;
     const router = useRouter();
     const pathname = usePathname();

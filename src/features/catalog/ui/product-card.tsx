@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import { BookmarkIcon, HandbagIcon, ImageIcon } from "lucide-react";
+import { toast } from "sonner";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
+import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
+import { useWishlistStore } from "@/features/wishlist/store/wishlist.store";
 
 type ProductCardProps = {
     product: ProductListItem;
@@ -28,6 +33,15 @@ const BADGE_STYLES: Record<Badge["variant"], string> = {
 export function ProductCard({ product }: ProductCardProps) {
     const { name, thumbnail, priceCents, compareAtCents, currency, category } = product;
     const badge = resolveBadge(product);
+    const isInWishlist = useWishlistStore((s) => s.ids.includes(product.id));
+    const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
+
+    function handleWishlistToggle() {
+        toggleWishlistItem(product.id);
+        toast(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
+            icon: <BookmarkIcon className="size-4" fill={isInWishlist ? "none" : "currentColor"} />,
+        });
+    }
 
     return (
         <article className="aspect-[3/4] relative w-full select-none" aria-label={name}>
@@ -50,13 +64,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl">
-                <button
-                    type="button"
-                    aria-label="Add to wishlist"
-                    className="absolute z-30 top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-1"
-                >
-                    <BookmarkIcon className="w-4 h-4 text-gray-700" strokeWidth={1.5} />
-                </button>
+                <WishlistButton isInWishlist={isInWishlist} onToggle={handleWishlistToggle} />
             </div>
 
             {/* Info panel */}
