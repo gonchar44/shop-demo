@@ -27,7 +27,9 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
             <body className="min-h-full flex flex-col">
-                <ReactQueryProvider>{children}</ReactQueryProvider>
+                <div className="max-w-7xl w-full mx-auto flex-1 flex flex-col">
+                    <ReactQueryProvider>{children}</ReactQueryProvider>
+                </div>
                 <Toaster toastOptions={{ style: { borderRadius: "1rem" } }} />
             </body>
         </html>
