@@ -8,25 +8,39 @@ export class ApiError extends Error {
     }
 }
 
+const DEFAULT_TIMEOUT_MS = 30_000;
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T | undefined> {
-    const res = await fetch(path, init);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 
-    if (!res.ok) {
-        const message = await readErrorMessage(res);
-        throw new ApiError(res.status, message);
+    const signal =
+        init?.signal && typeof AbortSignal !== "undefined" && typeof AbortSignal.any === "function"
+            ? AbortSignal.any([controller.signal, init.signal])
+            : (init?.signal ?? controller.signal);
+
+    try {
+        const res = await fetch(path, { ...init, signal });
+
+        if (!res.ok) {
+            const message = await readErrorMessage(res);
+            throw new ApiError(res.status, message);
+        }
+
+        if (res.status === 204) {
+            return undefined;
+        }
+
+        const text = await res.text();
+
+        if (!text) {
+            return undefined;
+        }
+
+        return JSON.parse(text) as T;
+    } finally {
+        clearTimeout(timer);
     }
-
-    if (res.status === 204) {
-        return undefined;
-    }
-
-    const text = await res.text();
-
-    if (!text) {
-        return undefined;
-    }
-
-    return JSON.parse(text) as T;
 }
 
 async function readErrorMessage(res: Response) {
