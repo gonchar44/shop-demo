@@ -1,24 +1,5 @@
-import { connection } from "next/server";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { productListServerQueryOptions } from "@/features/catalog/server/product-query-options";
-import { getQueryClient } from "@/shared/lib/query-client.server";
+import { HomeHero } from "@/features/home/ui/home-hero";
 
-const INITIAL_PRODUCT_LIST_PARAMS = { page: 1, limit: 12 };
-
-export default async function Home() {
-    await connection();
-
-    const queryClient = getQueryClient();
-
-    try {
-        await queryClient.prefetchQuery(productListServerQueryOptions(INITIAL_PRODUCT_LIST_PARAMS));
-    } catch {
-        // prefetch is best-effort; page renders from client fetch on failure
-    }
-
-    return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <main />
-        </HydrationBoundary>
-    );
+export default function Home() {
+    return <HomeHero />;
 }
