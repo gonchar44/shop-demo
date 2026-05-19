@@ -8,10 +8,10 @@ function buildProductWhere(q?: string) {
         ? {
               OR: [
                   { name: { contains: q, mode: "insensitive" as const } },
-                  { category: { name: { contains: q, mode: "insensitive" as const } } },
-                  { collection: { name: { contains: q, mode: "insensitive" as const } } },
-                  { room: { name: { contains: q, mode: "insensitive" as const } } },
-                  { style: { name: { contains: q, mode: "insensitive" as const } } },
+                  { category: { is: { name: { contains: q, mode: "insensitive" as const } } } },
+                  { collection: { is: { name: { contains: q, mode: "insensitive" as const } } } },
+                  { room: { is: { name: { contains: q, mode: "insensitive" as const } } } },
+                  { style: { is: { name: { contains: q, mode: "insensitive" as const } } } },
                   { colors: { some: { name: { contains: q, mode: "insensitive" as const } } } },
                   { materials: { some: { name: { contains: q, mode: "insensitive" as const } } } },
               ],
