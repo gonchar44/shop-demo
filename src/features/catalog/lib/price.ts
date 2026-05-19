@@ -7,7 +7,9 @@ export function formatPrice(cents: number, currency: string): string {
 }
 
 export function getDiscountPercent(priceCents: number, compareAtCents: number): string | null {
+    if (compareAtCents <= 0) return null;
     if (priceCents >= compareAtCents) return null;
     const discount = Math.round(((compareAtCents - priceCents) / compareAtCents) * 100);
+    if (!isFinite(discount) || discount <= 0) return null;
     return `-${discount}%`;
 }
