@@ -20,11 +20,7 @@ export function WishlistButton({ isInWishlist, onToggle }: WishlistButtonProps) 
             onClick={onToggle}
             className="absolute z-30 top-3 right-3"
         >
-            <BookmarkIcon
-                className="w-4 h-4"
-                strokeWidth={2}
-                fill={isInWishlist ? "currentColor" : "none"}
-            />
+            <BookmarkIcon className="w-4 h-4" strokeWidth={2} fill={isInWishlist ? "currentColor" : "none"} />
         </Button>
     );
 }
