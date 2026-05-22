@@ -1,6 +1,7 @@
 "use client";
 
 import { BookmarkIcon } from "lucide-react";
+import { Button } from "@/shared/ui/button";
 
 type WishlistButtonProps = {
     isInWishlist: boolean;
@@ -9,18 +10,21 @@ type WishlistButtonProps = {
 
 export function WishlistButton({ isInWishlist, onToggle }: WishlistButtonProps) {
     return (
-        <button
+        <Button
             type="button"
+            variant="ghost-circle"
+            size="icon-sm"
+            shape="circle"
             aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
             aria-pressed={isInWishlist}
             onClick={onToggle}
-            className="absolute cursor-pointer z-30 top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-1"
+            className="absolute z-30 top-3 right-3"
         >
             <BookmarkIcon
-                className="w-4 h-4 text-gray-700"
+                className="w-4 h-4"
                 strokeWidth={2}
                 fill={isInWishlist ? "currentColor" : "none"}
             />
-        </button>
+        </Button>
     );
 }

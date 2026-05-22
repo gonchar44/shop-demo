@@ -7,6 +7,7 @@ import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist.store";
+import { Button } from "@/shared/ui/button";
 
 type ProductCardProps = {
     product: ProductListItem;
@@ -94,13 +95,16 @@ export function ProductCard({ product }: ProductCardProps) {
                             )}
                         </div>
                     </div>
-                    <button
+                    <Button
                         type="button"
+                        variant="primary"
+                        size="icon-md"
+                        shape="circle"
                         aria-label="Add to cart"
-                        className="bottom-2 right-2 absolute w-9 h-9 rounded-full bg-white flex items-center justify-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
+                        className="absolute bottom-2 right-2 shrink-0 bg-white text-gray-950 hover:bg-gray-100 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                     >
-                        <HandbagIcon className="size-5 text-gray-950" />
-                    </button>
+                        <HandbagIcon className="size-5" />
+                    </Button>
                 </div>
             </div>
         </article>
