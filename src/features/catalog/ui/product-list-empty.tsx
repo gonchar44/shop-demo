@@ -42,9 +42,17 @@ export function ProductListEmpty({ variant, onRetry, onClearSearch }: ProductLis
 
     function resolveAction() {
         if (variant === "error" && onRetry)
-            return <Button type="button" onClick={onRetry}>Try again</Button>;
+            return (
+                <Button type="button" onClick={onRetry}>
+                    Try again
+                </Button>
+            );
         if (variant === "no-results" && onClearSearch)
-            return <Button type="button" onClick={onClearSearch}>Clear search</Button>;
+            return (
+                <Button type="button" onClick={onClearSearch}>
+                    Clear search
+                </Button>
+            );
     }
 
     return <EmptyState icon={Icon} heading={heading} subtext={subtext} action={resolveAction()} />;
