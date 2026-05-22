@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { showToast } from "@/shared/lib/toast";
 import { productListQueryOptions } from "@/features/catalog/api/product-queries";
 import type { ProductListParams } from "@/features/catalog/model/product.types";
 import { ProductCard } from "./product-card";
 import { ProductPagination } from "./product-pagination";
 import { ProductListEmpty } from "./product-list-empty";
-import { AlertCircleIcon } from "lucide-react";
 
 export function ProductList({ params }: { params: ProductListParams }) {
     const { data: products, isPending, isError, refetch } = useQuery(productListQueryOptions(params));
@@ -18,7 +17,7 @@ export function ProductList({ params }: { params: ProductListParams }) {
 
     useEffect(() => {
         if (isError) {
-            toast.error("Failed to load products", { icon: <AlertCircleIcon className="size-4 text-destructive" /> });
+            showToast.error("Failed to load products");
         }
     }, [isError]);
 

@@ -35,10 +35,7 @@ export function HomeHero() {
                     </motion.h1>
 
                     {/* Tagline */}
-                    <motion.p
-                        className="text-sm text-gray-500 leading-relaxed max-w-xs"
-                        variants={fadeUpItem}
-                    >
+                    <motion.p className="text-sm text-gray-500 leading-relaxed max-w-xs" variants={fadeUpItem}>
                         A new shopping experience is on its way.
                         <br />
                         For now, explore what&apos;s already here.

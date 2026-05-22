@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { BookmarkIcon, HandbagIcon, ImageIcon } from "lucide-react";
-import { toast } from "sonner";
+import { showToast } from "@/shared/lib/toast";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
@@ -38,7 +38,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
     function handleWishlistToggle() {
         toggleWishlistItem(product.id);
-        toast(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
+        showToast.custom(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
             icon: <BookmarkIcon className="size-4" fill={isInWishlist ? "none" : "currentColor"} />,
         });
     }
