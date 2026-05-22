@@ -1,25 +1,45 @@
 "use client";
 
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { showToast } from "@/shared/lib/toast";
 import { productListQueryOptions } from "@/features/catalog/api/product-queries";
 import type { ProductListParams } from "@/features/catalog/model/product.types";
 import { ProductCard } from "./product-card";
 import { ProductPagination } from "./product-pagination";
+import { ProductListEmpty } from "./product-list-empty";
 
 export function ProductList({ params }: { params: ProductListParams }) {
-    const { data, isPending, isError } = useQuery(productListQueryOptions(params));
+    const { data: products, isPending, isError, refetch } = useQuery(productListQueryOptions(params));
+    const router = useRouter();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        if (isError) {
+            showToast.error("Failed to load products");
+        }
+    }, [isError]);
+
+    function handleClearSearch() {
+        router.push(pathname);
+    }
 
     if (isPending) return <div className="py-10 text-center text-sm text-gray-500">Loading...</div>;
-    if (isError || !data) return <div className="py-10 text-center text-sm text-red-500">Failed to load products.</div>;
+    if (isError || !products) return <ProductListEmpty variant="error" onRetry={refetch} />;
+    if (products.data.length === 0)
+        return (
+            <ProductListEmpty variant={params.q ? "no-results" : "empty-catalog"} onClearSearch={handleClearSearch} />
+        );
 
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-10 py-5">
-                {data.data.map((product) => (
+                {products.data.map((product) => (
                     <ProductCard product={product} key={product.id} />
                 ))}
             </div>
-            <ProductPagination pagination={data.pagination} />
+            <ProductPagination pagination={products.pagination} />
         </>
     );
 }
