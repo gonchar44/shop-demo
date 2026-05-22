@@ -8,14 +8,16 @@ import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist.store";
 import { Button } from "@/shared/ui/button";
+import { Badge } from "@/shared/ui/badge";
+import { cn } from "@/shared/lib/utils";
 
 type ProductCardProps = {
     product: ProductListItem;
 };
 
-type Badge = { label: string; variant: "sale" | "new" | "featured" };
+type ProductBadge = { label: string; variant: "sale" | "new" | "featured" };
 
-function resolveBadge(product: ProductListItem): Badge | null {
+function resolveBadge(product: ProductListItem): ProductBadge | null {
     if (product.compareAtCents) {
         const discountLabel = getDiscountPercent(product.priceCents, product.compareAtCents);
         if (discountLabel) return { label: discountLabel, variant: "sale" };
@@ -25,7 +27,7 @@ function resolveBadge(product: ProductListItem): Badge | null {
     return null;
 }
 
-const BADGE_STYLES: Record<Badge["variant"], string> = {
+const BADGE_STYLES: Record<ProductBadge["variant"], string> = {
     sale: "bg-gray-950 text-white",
     new: "bg-orange-400/80 backdrop-blur-sm text-white",
     featured: "bg-blue-400/80 backdrop-blur-sm text-white",
@@ -70,13 +72,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
             {/* Info panel */}
             <div className="flex flex-col z-30 items-end gap-y-1.5 absolute bottom-0 left-0 w-full">
-                {badge && (
-                    <span
-                        className={`z-10 text-xs font-semibold mr-2 px-3 py-1 rounded-full ${BADGE_STYLES[badge.variant]}`}
-                    >
-                        {badge.label}
-                    </span>
-                )}
+                {badge && <Badge className={cn("z-10 mr-2", BADGE_STYLES[badge.variant])}>{badge.label}</Badge>}
 
                 <div className="bg-gray-950 rounded-3xl p-4 w-full">
                     <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-widest leading-none">
