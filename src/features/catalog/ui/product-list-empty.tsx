@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "motion/react";
 import { WifiOffIcon, SearchXIcon, PackageIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { fadeUpContainer, fadeUpItem } from "@/shared/lib/motion";
+import { EmptyState } from "@/shared/ui/empty-state";
+import { Button } from "@/shared/ui/button";
 
 type Variant = "error" | "no-results" | "empty-catalog";
 
@@ -40,46 +40,20 @@ const VARIANT_CONFIG: Record<Variant, VariantConfig> = {
 export function ProductListEmpty({ variant, onRetry, onClearSearch }: ProductListEmptyProps) {
     const { Icon, heading, subtext } = VARIANT_CONFIG[variant];
 
-    return (
-        <motion.div
-            className="py-20 flex flex-col items-center gap-6"
-            variants={fadeUpContainer}
-            initial="hidden"
-            animate="visible"
-        >
-            <motion.div
-                className="bg-gray-100 rounded-3xl w-24 h-24 flex items-center justify-center"
-                variants={fadeUpItem}
-            >
-                <Icon className="size-10 text-gray-400" strokeWidth={1.5} />
-            </motion.div>
-
-            <motion.div className="flex flex-col items-center gap-2" variants={fadeUpItem}>
-                <h2 className="font-mono font-bold text-3xl text-gray-950">{heading}</h2>
-                <p className="text-sm text-gray-500 text-center max-w-xs">{subtext}</p>
-            </motion.div>
-
-            {variant === "error" && onRetry && (
-                <motion.button
-                    type="button"
-                    onClick={onRetry}
-                    className="cursor-pointer bg-gray-950 text-white rounded-2xl px-6 py-3 text-sm font-bold hover:bg-gray-800 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
-                    variants={fadeUpItem}
-                >
+    function resolveAction() {
+        if (variant === "error" && onRetry)
+            return (
+                <Button type="button" onClick={onRetry}>
                     Try again
-                </motion.button>
-            )}
-
-            {variant === "no-results" && onClearSearch && (
-                <motion.button
-                    type="button"
-                    onClick={onClearSearch}
-                    className="cursor-pointer bg-gray-950 text-white rounded-2xl px-6 py-3 text-sm font-bold hover:bg-gray-800 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
-                    variants={fadeUpItem}
-                >
+                </Button>
+            );
+        if (variant === "no-results" && onClearSearch)
+            return (
+                <Button type="button" onClick={onClearSearch}>
                     Clear search
-                </motion.button>
-            )}
-        </motion.div>
-    );
+                </Button>
+            );
+    }
+
+    return <EmptyState icon={Icon} heading={heading} subtext={subtext} action={resolveAction()} />;
 }
