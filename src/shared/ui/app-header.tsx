@@ -3,7 +3,7 @@ import { Button } from "@/shared/ui/button";
 
 export function AppHeader() {
     return (
-        <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-[14px] backdrop-saturate-150 border-b border-[rgba(232,232,230,0.7)]">
+        <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-[14px] backdrop-saturate-150 border-b border-gray-200/70">
             <div className="max-w-7xl mx-auto px-9 py-3.5 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                     {/*<span className="size-2.5 bg-gray-950 rounded-[2px] shrink-0" />*/}

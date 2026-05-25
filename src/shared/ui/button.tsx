@@ -28,7 +28,7 @@ const buttonVariants = cva(
                 ],
                 ghost: [
                     "bg-transparent text-gray-950",
-                    "hover:bg-[#f3f3f1]",
+                    "hover:bg-gray-100",
                     "focus-visible:ring-gray-950",
                     "disabled:opacity-50 disabled:hover:bg-transparent",
                 ],
