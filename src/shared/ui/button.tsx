@@ -26,10 +26,17 @@ const buttonVariants = cva(
                     "focus-visible:ring-gray-950",
                     "disabled:opacity-35 disabled:hover:bg-gray-100 disabled:hover:text-gray-950",
                 ],
+                ghost: [
+                    "bg-transparent text-gray-950",
+                    "hover:bg-gray-100",
+                    "focus-visible:ring-gray-950",
+                    "disabled:opacity-50 disabled:hover:bg-transparent",
+                ],
                 "ghost-circle": [
                     "bg-white/80 backdrop-blur-sm text-gray-700",
                     "hover:bg-white",
                     "focus-visible:ring-gray-950",
+                    "disabled:opacity-50 disabled:hover:bg-white/80",
                 ],
             },
             size: {
