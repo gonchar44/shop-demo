@@ -1,7 +1,27 @@
 import { prisma } from "@/shared/db/prisma";
 import type { ProductListItem, ProductListParams, ProductListResponse } from "@/features/catalog/model/product.types";
 
-type ProductForList = Awaited<ReturnType<typeof findProductsForList>>[number];
+const productListSelect = {
+    id: true,
+    slug: true,
+    name: true,
+    description: true,
+    priceCents: true,
+    compareAtCents: true,
+    currency: true,
+    thumbnail: true,
+    stock: true,
+    isFeatured: true,
+    isNew: true,
+    rating: true,
+    reviewCount: true,
+    category: { select: { id: true, slug: true, name: true } },
+    collection: { select: { id: true, slug: true, name: true } },
+    room: { select: { id: true, slug: true, name: true } },
+    style: { select: { id: true, slug: true, name: true } },
+    colors: { select: { id: true, slug: true, name: true, hex: true } },
+    materials: { select: { id: true, slug: true, name: true } },
+} as const;
 
 function buildProductWhere(q?: string) {
     const searchFilter = q
@@ -18,6 +38,42 @@ function buildProductWhere(q?: string) {
           }
         : {};
     return { isPublished: true, ...searchFilter };
+}
+
+function findProductsForList(skip: number, take: number, where: ReturnType<typeof buildProductWhere>) {
+    return prisma.product.findMany({
+        where,
+        select: productListSelect,
+        orderBy: { createdAt: "asc" },
+        skip,
+        take,
+    });
+}
+
+type ProductForList = Awaited<ReturnType<typeof findProductsForList>>[number];
+
+function mapProductForList(product: ProductForList): ProductListItem {
+    return {
+        id: product.id,
+        slug: product.slug,
+        name: product.name,
+        description: product.description,
+        priceCents: product.priceCents,
+        compareAtCents: product.compareAtCents,
+        currency: product.currency,
+        thumbnail: product.thumbnail,
+        stock: product.stock,
+        isFeatured: product.isFeatured,
+        isNew: product.isNew,
+        rating: product.rating,
+        reviewCount: product.reviewCount,
+        category: product.category,
+        collection: product.collection,
+        room: product.room,
+        style: product.style,
+        colors: product.colors,
+        materials: product.materials,
+    };
 }
 
 export async function getProductList(params: ProductListParams): Promise<ProductListResponse> {
@@ -43,56 +99,11 @@ export async function getProductList(params: ProductListParams): Promise<Product
     };
 }
 
-function findProductsForList(skip: number, take: number, where: ReturnType<typeof buildProductWhere>) {
-    return prisma.product.findMany({
-        where,
-        select: {
-            id: true,
-            slug: true,
-            name: true,
-            description: true,
-            priceCents: true,
-            compareAtCents: true,
-            currency: true,
-            thumbnail: true,
-            stock: true,
-            isFeatured: true,
-            isNew: true,
-            rating: true,
-            reviewCount: true,
-            category: { select: { id: true, slug: true, name: true } },
-            collection: { select: { id: true, slug: true, name: true } },
-            room: { select: { id: true, slug: true, name: true } },
-            style: { select: { id: true, slug: true, name: true } },
-            colors: { select: { id: true, slug: true, name: true, hex: true } },
-            materials: { select: { id: true, slug: true, name: true } },
-        },
-        orderBy: { createdAt: "asc" },
-        skip,
-        take,
+export async function getProductsByIds(ids: string[]): Promise<ProductListItem[]> {
+    if (ids.length === 0) return [];
+    const products = await prisma.product.findMany({
+        where: { isPublished: true, id: { in: ids } },
+        select: productListSelect,
     });
-}
-
-function mapProductForList(product: ProductForList): ProductListItem {
-    return {
-        id: product.id,
-        slug: product.slug,
-        name: product.name,
-        description: product.description,
-        priceCents: product.priceCents,
-        compareAtCents: product.compareAtCents,
-        currency: product.currency,
-        thumbnail: product.thumbnail,
-        stock: product.stock,
-        isFeatured: product.isFeatured,
-        isNew: product.isNew,
-        rating: product.rating,
-        reviewCount: product.reviewCount,
-        category: product.category,
-        collection: product.collection,
-        room: product.room,
-        style: product.style,
-        colors: product.colors,
-        materials: product.materials,
-    };
+    return products.map(mapProductForList);
 }
