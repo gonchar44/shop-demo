@@ -35,7 +35,7 @@ export function ProductPagination({ pagination }: ProductPaginationProps) {
                 disabled={!hasPrev}
                 aria-label="First page"
             >
-                <ChevronsLeftIcon className="size-4" strokeWidth={2} />
+                <ChevronsLeftIcon className="size-5" strokeWidth={2} />
             </Button>
 
             <Button
@@ -46,7 +46,7 @@ export function ProductPagination({ pagination }: ProductPaginationProps) {
                 disabled={!hasPrev}
                 aria-label="Previous page"
             >
-                <ChevronLeftIcon className="size-4" strokeWidth={2} />
+                <ChevronLeftIcon className="size-5" strokeWidth={2} />
             </Button>
 
             <span className="px-4 text-sm font-medium text-gray-500 tabular-nums select-none">
@@ -61,7 +61,7 @@ export function ProductPagination({ pagination }: ProductPaginationProps) {
                 disabled={!hasNext}
                 aria-label="Next page"
             >
-                <ChevronRightIcon className="size-4" strokeWidth={2} />
+                <ChevronRightIcon className="size-5" strokeWidth={2} />
             </Button>
 
             <Button
@@ -72,7 +72,7 @@ export function ProductPagination({ pagination }: ProductPaginationProps) {
                 disabled={!hasNext}
                 aria-label="Last page"
             >
-                <ChevronsRightIcon className="size-4" strokeWidth={2} />
+                <ChevronsRightIcon className="size-5" strokeWidth={2} />
             </Button>
         </div>
     );

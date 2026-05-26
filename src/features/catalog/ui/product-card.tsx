@@ -6,6 +6,7 @@ import { showToast } from "@/shared/lib/toast";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
+import { WISHLIST_MAX_ITEMS } from "@/features/wishlist/lib/wishlist.constants";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist.store";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -36,10 +37,17 @@ const BADGE_STYLES: Record<ProductBadge["variant"], string> = {
 export function ProductCard({ product }: ProductCardProps) {
     const { name, thumbnail, priceCents, compareAtCents, currency, category } = product;
     const badge = resolveBadge(product);
-    const isInWishlist = useWishlistStore((s) => s.ids.includes(product.id));
+    const isInWishlist = useWishlistStore((s) => s.items.some((i) => i.id === product.id));
+    const wishlistCount = useWishlistStore((s) => s.items.length);
     const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
 
     function handleWishlistToggle() {
+        if (!isInWishlist && wishlistCount >= WISHLIST_MAX_ITEMS) {
+            showToast.custom("Wishlist is full — remove an item to add more", {
+                icon: <BookmarkIcon className="size-4" fill="none" />,
+            });
+            return;
+        }
         toggleWishlistItem(product.id);
         showToast.custom(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
             icon: <BookmarkIcon className="size-4" fill={isInWishlist ? "none" : "currentColor"} />,
@@ -75,7 +83,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 {badge && <Badge className={cn("z-10 mr-2", BADGE_STYLES[badge.variant])}>{badge.label}</Badge>}
 
                 <div className="bg-gray-950 rounded-3xl p-4 w-full">
-                    <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-widest leading-none">
+                    <p className="text-gray-500 text-xs font-semibold uppercase tracking-widest leading-none">
                         {category.name}
                     </p>
                     <h3 className="text-white font-bold text-sm leading-snug mt-1 truncate">{name}</h3>
