@@ -8,7 +8,7 @@ import { fadeUpContainer, fadeUpItem } from "@/shared/lib/motion";
 // TODO: It's temporary content. Replace it with real content.
 export function HomeHero() {
     return (
-        <main className="flex-1 flex flex-col justify-center bg-white p-6">
+        <main className="flex-1 flex flex-col justify-center bg-white py-6">
             <motion.div variants={fadeUpContainer} initial="hidden" animate="visible">
                 {/* Top rule */}
                 <motion.div className="border-t border-gray-200 mb-12" variants={fadeUpItem} />

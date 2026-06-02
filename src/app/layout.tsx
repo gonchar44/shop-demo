@@ -30,7 +30,7 @@ export default function RootLayout({
             <body className="min-h-full flex flex-col">
                 <ReactQueryProvider>
                     <AppHeader />
-                    <div className="max-w-7xl w-full mx-auto flex-1 flex flex-col">{children}</div>
+                    <div className="max-w-7xl w-full mx-auto px-6 flex-1 flex flex-col">{children}</div>
                 </ReactQueryProvider>
                 <Toaster toastOptions={{ style: { borderRadius: "1rem" } }} />
             </body>
