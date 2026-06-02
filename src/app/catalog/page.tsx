@@ -30,7 +30,7 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <main className="min-h-screen bg-white gap-y-6 flex flex-col p-6">
+            <main className="min-h-screen bg-white gap-y-6 flex flex-col py-6">
                 <h1 className="text-2xl font-bold text-gray-950">Products</h1>
                 <Suspense fallback={<Skeleton className="w-96 h-12 rounded-2xl" />}>
                     <ProductSearch />
