@@ -28,7 +28,7 @@ export function WishlistPopover() {
         isError,
     } = useQuery({
         ...wishlistProductsQueryOptions(ids),
-        placeholderData: keepPreviousData,
+        placeholderData: ids.length > 0 ? keepPreviousData : undefined,
     });
 
     const addedAtMap = Object.fromEntries(items.map((i) => [i.id, i.addedAt]));
