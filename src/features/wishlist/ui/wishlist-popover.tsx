@@ -23,6 +23,8 @@ export function WishlistPopover() {
     const {
         data: products = [],
         isLoading,
+        isFetching,
+        isPlaceholderData,
         isError,
     } = useQuery({
         ...wishlistProductsQueryOptions(ids),
@@ -82,7 +84,7 @@ export function WishlistPopover() {
             )}
 
             {/* Empty state */}
-            {displayedProducts.length === 0 && !isLoading && !isError && (
+            {displayedProducts.length === 0 && !isLoading && !isFetching && !isPlaceholderData && !isError && (
                 <EmptyState
                     icon={BookmarkIcon}
                     heading="No saved items"
@@ -92,9 +94,9 @@ export function WishlistPopover() {
             )}
 
             {/* List */}
-            {(isLoading || displayedProducts.length > 0) && (
+            {(isLoading || isFetching || displayedProducts.length > 0) && (
                 <ul className="max-h-90 overflow-y-auto py-1.5 px-1">
-                    {isLoading
+                    {isLoading || (isFetching && displayedProducts.length === 0)
                         ? Array.from({ length: Math.max(ids.length, 1) }).map((_, i) => (
                               <li key={i} className="flex gap-3.5 px-4 py-3.5">
                                   <Skeleton className="flex-none w-18 h-22 rounded-xl" />

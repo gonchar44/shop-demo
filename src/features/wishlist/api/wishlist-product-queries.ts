@@ -19,5 +19,6 @@ export function wishlistProductsQueryOptions(ids: string[]) {
 
 async function fetchWishlistProducts(ids: string[]): Promise<ProductListItem[]> {
     const response = await apiGet<WishlistProductsResponse>(`/api/products?ids=${ids.join(",")}`);
-    return response?.data ?? [];
+    if (!response) throw new Error("Failed to fetch wishlist products");
+    return response.data ?? [];
 }
