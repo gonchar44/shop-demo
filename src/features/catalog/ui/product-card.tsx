@@ -8,6 +8,8 @@ import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
 import { WISHLIST_MAX_ITEMS } from "@/features/wishlist/lib/wishlist.constants";
 import { useWishlistStore } from "@/features/wishlist/store/wishlist.store";
+import { useCartStore } from "@/features/cart/store/cart.store";
+import { CART_MAX_ITEMS } from "@/features/cart/lib/cart.constants";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { cn } from "@/shared/lib/utils";
@@ -41,6 +43,15 @@ export function ProductCard({ product }: ProductCardProps) {
     const wishlistCount = useWishlistStore((s) => s.items.length);
     const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
 
+    const addToCart = useCartStore((s) => s.addToCart);
+    const cartItemQty = useCartStore((s) => s.items.find((i) => i.id === product.id)?.quantity ?? 0);
+    const cartCount = useCartStore((s) => s.items.length);
+
+    const isOutOfStock = product.stock === 0;
+    const isAtStockLimit = cartItemQty >= product.stock;
+    const isCartDisabled = isOutOfStock || isAtStockLimit;
+    const cartButtonLabel = isOutOfStock ? "Out of stock" : isAtStockLimit ? "Maximum quantity reached" : "Add to cart";
+
     function handleWishlistToggle() {
         if (!isInWishlist && wishlistCount >= WISHLIST_MAX_ITEMS) {
             showToast.custom("Wishlist is full — remove an item to add more", {
@@ -51,6 +62,20 @@ export function ProductCard({ product }: ProductCardProps) {
         toggleWishlistItem(product.id);
         showToast.custom(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
             icon: <BookmarkIcon className="size-4" fill={isInWishlist ? "none" : "currentColor"} />,
+        });
+    }
+
+    function handleAddToCart() {
+        if (isOutOfStock || isAtStockLimit) return;
+        if (cartItemQty === 0 && cartCount >= CART_MAX_ITEMS) {
+            showToast.custom("Cart is full — remove an item to add more", {
+                icon: <HandbagIcon className="size-4" />,
+            });
+            return;
+        }
+        addToCart(product.id, product.stock);
+        showToast.custom("Added to cart", {
+            icon: <HandbagIcon className="size-4" />,
         });
     }
 
@@ -104,7 +129,9 @@ export function ProductCard({ product }: ProductCardProps) {
                         variant="primary"
                         size="icon-md"
                         shape="circle"
-                        aria-label="Add to cart"
+                        aria-label={cartButtonLabel}
+                        disabled={isCartDisabled}
+                        onClick={handleAddToCart}
                         className="absolute bottom-2 right-2 shrink-0 bg-white text-gray-950 hover:bg-gray-100 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950"
                     >
                         <HandbagIcon className="size-5" />
