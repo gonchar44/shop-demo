@@ -1,29 +1,18 @@
 import Image from "next/image";
-import { motion } from "motion/react";
-import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice } from "@/features/catalog/lib/price";
+import { CartQuantityControl } from "@/features/cart/ui/cart-quantity-control";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 type CartPopoverItemProps = {
     product: ProductListItem;
-    quantity: number;
     showTopBorder: boolean;
-    onQuantityChange: (quantity: number) => void;
     onRemove: () => void;
 };
 
-export function CartPopoverItem({
-    product,
-    quantity,
-    showTopBorder,
-    onQuantityChange,
-    onRemove,
-}: CartPopoverItemProps) {
-    const isDecreaseDisabled = quantity <= 1;
-    const isIncreaseDisabled = quantity >= product.stock;
-
+export function CartPopoverItem({ product, showTopBorder, onRemove }: CartPopoverItemProps) {
     return (
         <li
             className={cn(
@@ -57,37 +46,12 @@ export function CartPopoverItem({
                 </p>
 
                 {/* Quantity stepper */}
-                <div className="flex items-center gap-1 mt-1.5">
-                    <Button
-                        onClick={() => onQuantityChange(quantity - 1)}
-                        disabled={isDecreaseDisabled}
-                        variant="outlined"
-                        size="icon-sm"
-                        shape="circle"
-                        aria-label="Decrease quantity"
-                    >
-                        <MinusIcon className="size-3.5" strokeWidth={2} />
-                    </Button>
-                    <motion.span
-                        key={quantity}
-                        initial={{ opacity: 0, scale: 0.7 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.15 }}
-                        className="w-6 text-center text-sm font-semibold text-gray-950 tabular-nums"
-                    >
-                        {quantity}
-                    </motion.span>
-                    <Button
-                        onClick={() => onQuantityChange(quantity + 1)}
-                        disabled={isIncreaseDisabled}
-                        variant="outlined"
-                        size="icon-sm"
-                        shape="circle"
-                        aria-label="Increase quantity"
-                    >
-                        <PlusIcon className="size-3.5" strokeWidth={2} />
-                    </Button>
-                </div>
+                <CartQuantityControl
+                    productId={product.id}
+                    stock={product.stock}
+                    variant="popover"
+                    className="mt-1.5"
+                />
             </div>
 
             {/* Remove */}

@@ -17,7 +17,7 @@ export function CartPopoverFooter({ subtotalCents, subtotalCurrency }: CartPopov
                 <span className="font-mono text-xs tracking-widest uppercase text-gray-400">Subtotal</span>
                 <AnimatePresence mode="wait">
                     <motion.span
-                        key={subtotalCents}
+                        key={`${subtotalCents}-${subtotalCurrency}`}
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}

@@ -16,7 +16,6 @@ import { showToast } from "@/shared/lib/toast";
 export function CartPopover() {
     const items = useCartStore((s) => s.items);
     const removeFromCart = useCartStore((s) => s.removeFromCart);
-    const updateQuantity = useCartStore((s) => s.updateQuantity);
 
     const ids = items.map((i) => i.id);
 
@@ -107,27 +106,19 @@ export function CartPopover() {
                         ? Array.from({ length: Math.max(ids.length, 1) }).map((_, index) => (
                               <CartPopoverItemSkeleton key={index} />
                           ))
-                        : displayedProducts.map((product, index) => {
-                              const cartItem = itemMap[product.id];
-
-                              return (
-                                  <CartPopoverItem
-                                      key={product.id}
-                                      product={product}
-                                      quantity={cartItem?.quantity ?? 1}
-                                      showTopBorder={index > 0}
-                                      onQuantityChange={(quantity) =>
-                                          updateQuantity(product.id, quantity, product.stock)
-                                      }
-                                      onRemove={() => {
-                                          removeFromCart(product.id);
-                                          showToast.custom("Removed from cart", {
-                                              icon: <ShoppingCartIcon className="size-4" />,
-                                          });
-                                      }}
-                                  />
-                              );
-                          })}
+                        : displayedProducts.map((product, index) => (
+                              <CartPopoverItem
+                                  key={product.id}
+                                  product={product}
+                                  showTopBorder={index > 0}
+                                  onRemove={() => {
+                                      removeFromCart(product.id);
+                                      showToast.custom("Removed from cart", {
+                                          icon: <ShoppingCartIcon className="size-4" />,
+                                      });
+                                  }}
+                              />
+                          ))}
                 </ul>
             )}
 
