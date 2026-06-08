@@ -10,7 +10,7 @@ import { formatPrice } from "@/features/catalog/lib/price";
 import { Button } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PopoverClose } from "@/shared/ui/popover";
-import { Skeleton } from "@/shared/ui/skeleton";
+import { WishlistPopoverItemSkeleton } from "@/features/wishlist/ui/wishlist-popover-item-skeleton";
 import { showToast } from "@/shared/lib/toast";
 import { cn } from "@/shared/lib/utils";
 
@@ -97,15 +97,8 @@ export function WishlistPopover() {
             {(isLoading || isFetching || displayedProducts.length > 0) && (
                 <ul className="max-h-90 overflow-y-auto py-1.5 px-1">
                     {isLoading || (isFetching && displayedProducts.length === 0)
-                        ? Array.from({ length: Math.max(ids.length, 1) }).map((_, i) => (
-                              <li key={i} className="flex gap-3.5 px-4 py-3.5">
-                                  <Skeleton className="flex-none w-18 h-22 rounded-xl" />
-                                  <div className="flex-1 flex flex-col gap-2 pt-1">
-                                      <Skeleton className="h-3 w-16 rounded" />
-                                      <Skeleton className="h-4 w-3/4 rounded" />
-                                      <Skeleton className="h-4 w-12 rounded" />
-                                  </div>
-                              </li>
+                        ? Array.from({ length: Math.max(ids.length, 1) }).map((_, index) => (
+                              <WishlistPopoverItemSkeleton key={index} />
                           ))
                         : displayedProducts.map((product, index) => (
                               <li
