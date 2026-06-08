@@ -100,7 +100,7 @@ export function CartPopover() {
             )}
 
             {/* List */}
-            {(isLoading || isFetching || displayedProducts.length > 0) && (
+            {!isError && (isLoading || isFetching || displayedProducts.length > 0) && (
                 <ul className="max-h-90 overflow-y-auto py-1.5 px-1">
                     {isLoading || (isFetching && displayedProducts.length === 0)
                         ? Array.from({ length: Math.max(ids.length, 1) }).map((_, index) => (
@@ -123,7 +123,7 @@ export function CartPopover() {
             )}
 
             {/* Footer */}
-            {displayedProducts.length > 0 && !isLoading && (
+            {!isError && displayedProducts.length > 0 && !isLoading && (
                 <CartPopoverFooter subtotalCents={subtotalCents} subtotalCurrency={subtotalCurrency} />
             )}
         </motion.div>
