@@ -23,6 +23,7 @@ export const useCartStore = create<CartStore>()(
 
             addToCart: (id, stock) =>
                 set((state) => {
+                    if (stock <= 0) return state;
                     const existing = state.items.find((i) => i.id === id);
                     if (existing) {
                         return {
@@ -39,6 +40,7 @@ export const useCartStore = create<CartStore>()(
 
             updateQuantity: (id, quantity, stock) =>
                 set((state) => {
+                    if (stock <= 0) return state;
                     const clamped = Math.max(1, Math.min(quantity, stock));
                     return { items: state.items.map((i) => (i.id === id ? { ...i, quantity: clamped } : i)) };
                 }),
