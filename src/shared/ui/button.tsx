@@ -7,7 +7,7 @@ const buttonVariants = cva(
         "inline-flex items-center justify-center",
         "font-semibold cursor-pointer select-none",
         "transition-all duration-150",
-        "hover:scale-105 active:scale-95",
+        "active:scale-95",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1",
         "disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100",
     ],
@@ -67,10 +67,12 @@ const buttonVariants = cva(
     },
 );
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants>;
+type ButtonProps = React.ComponentPropsWithRef<"button"> & VariantProps<typeof buttonVariants>;
 
-export function Button({ className, variant, size, shape, ...props }: ButtonProps) {
-    return <button type="button" {...props} className={cn(buttonVariants({ variant, size, shape }), className)} />;
+export function Button({ className, variant, size, shape, type = "button", ref, ...props }: ButtonProps) {
+    return (
+        <button ref={ref} type={type} {...props} className={cn(buttonVariants({ variant, size, shape }), className)} />
+    );
 }
 
 export { buttonVariants };

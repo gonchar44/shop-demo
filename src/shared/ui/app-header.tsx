@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { HandbagIcon, ShoppingBagIcon } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+import { ShoppingBagIcon } from "lucide-react";
 import { WishlistControl } from "@/features/wishlist/ui/wishlist-control";
+import { CartControl } from "@/features/cart/ui/cart-control";
 
 export function AppHeader() {
     return (
@@ -18,16 +18,7 @@ export function AppHeader() {
 
                 <div className="flex items-center gap-1">
                     <WishlistControl />
-                    <Button
-                        disabled
-                        variant="ghost"
-                        size="icon-md"
-                        shape="circle"
-                        aria-label="Cart"
-                        className="relative"
-                    >
-                        <HandbagIcon className="size-5" strokeWidth={1.6} />
-                    </Button>
+                    <CartControl />
                 </div>
             </div>
         </header>
