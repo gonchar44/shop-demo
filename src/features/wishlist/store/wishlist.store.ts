@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 import { WISHLIST_MAX_ITEMS } from "@/features/wishlist/lib/wishlist.constants";
 
 export type WishlistItem = {
@@ -20,11 +20,15 @@ type WishlistStore = {
 };
 
 export const useWishlistStore = create<WishlistStore>()(
-    persist(
-        (set) => ({
-            items: [],
-            toggleWishlistItem: (id) => set((state) => ({ items: toggleItem(state.items, id) })),
-        }),
-        { name: "wishlist" },
+    devtools(
+        persist(
+            (set) => ({
+                items: [],
+                toggleWishlistItem: (id) =>
+                    set((state) => ({ items: toggleItem(state.items, id) }), false, "wishlist/toggleWishlistItem"),
+            }),
+            { name: "wishlist" },
+        ),
+        { name: "WishlistStore" },
     ),
 );
