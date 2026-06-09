@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @config "../../tailwind.config.ts";
 
 @custom-variant dark (&:is(.dark *));
@@ -46,6 +45,9 @@
 }
 
 :root {
+    --font-geist-sans: "Geist", Helvetica, Arial, sans-serif;
+    --font-geist-mono: "Geist Mono", ui-monospace, monospace;
+
     --black: oklch(0 0 0);
     --white: oklch(1 0 0);
     --gray-50: oklch(0.985 0 0);
@@ -105,5 +107,5 @@
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-geist-sans), Helvetica, Arial, sans-serif;
 }

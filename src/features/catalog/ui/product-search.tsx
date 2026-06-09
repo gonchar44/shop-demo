@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect, startTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { SearchIcon, XIcon } from "lucide-react";
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
 
 export function ProductSearch() {
     const searchParams = useSearchParams();
@@ -54,7 +56,7 @@ export function ProductSearch() {
                     aria-hidden
                 />
 
-                <input
+                <Input
                     ref={inputRef}
                     id="product-search"
                     type="search"
@@ -64,18 +66,21 @@ export function ProductSearch() {
                     onChange={(e) => setValue(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Search items…"
-                    className="w-full h-12 pl-11 pr-10 bg-gray-100 rounded-2xl text-sm text-gray-950 placeholder:text-gray-400 border border-transparent outline-none transition-all duration-150 focus:bg-white focus:border-gray-950 [&::-webkit-search-cancel-button]:hidden"
+                    className="pl-11 pr-10 [&::-webkit-search-cancel-button]:hidden"
                 />
 
                 {value && (
-                    <button
+                    <Button
                         type="button"
+                        variant="secondary"
+                        size="icon-sm"
+                        shape="circle"
                         onClick={handleClear}
                         aria-label="Clear search"
-                        className="cursor-pointer absolute right-3 w-6 h-6 flex items-center justify-center rounded-full bg-gray-300 hover:bg-gray-950 text-gray-600 hover:text-white transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-1"
+                        className="absolute right-3 w-6 h-6 bg-gray-300 text-gray-600 hover:bg-gray-950 hover:text-white"
                     >
                         <XIcon className="size-3" strokeWidth={2.5} />
-                    </button>
+                    </Button>
                 )}
             </div>
         </div>
