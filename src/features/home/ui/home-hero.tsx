@@ -31,7 +31,7 @@ export function HomeHero() {
                     >
                         Coming
                         <br />
-                        Soon
+                        Soon.
                     </motion.h1>
 
                     {/* Tagline */}
