@@ -40,10 +40,7 @@ export function ProductSearch() {
 
     function handleClear() {
         setValue("");
-        const next = new URLSearchParams(searchParams.toString());
-        next.delete("q");
-        next.set("page", "1");
-        router.push(`${pathname}?${next.toString()}`);
+        triggerSearch("");
         inputRef.current?.focus();
     }
 
