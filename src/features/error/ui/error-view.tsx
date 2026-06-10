@@ -11,6 +11,7 @@ import { cn } from "@/shared/lib/utils";
 type ErrorViewProps = {
     error: Error & { digest?: string };
     reset: () => void;
+    unstable_retry?: () => void;
 };
 
 export function ErrorView({ error, reset }: ErrorViewProps) {
