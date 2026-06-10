@@ -67,7 +67,8 @@ export function ProductSearch() {
                     autoComplete="off"
                     spellCheck={false}
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    maxLength={80}
+                    onChange={(e) => setValue(e.target.value.slice(0, 80))}
                     onKeyDown={handleKeyDown}
                     placeholder="Search items…"
                     className="pl-11 pr-20 [&::-webkit-search-cancel-button]:hidden"
