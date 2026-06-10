@@ -72,7 +72,7 @@ export function CartPopover() {
                         )}
                     </AnimatePresence>
                 </div>
-                <PopoverClose asChild>
+                <PopoverClose asChild={true}>
                     <Button variant="outlined" size="icon-sm" shape="circle" aria-label="Close cart">
                         <XIcon className="size-4" />
                     </Button>

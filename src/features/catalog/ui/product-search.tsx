@@ -57,7 +57,7 @@ export function ProductSearch() {
                 <SearchIcon
                     className="absolute left-4 size-4 text-gray-400 pointer-events-none transition-colors duration-150 group-focus-within:text-gray-950"
                     strokeWidth={2}
-                    aria-hidden
+                    aria-hidden={true}
                 />
 
                 <Input

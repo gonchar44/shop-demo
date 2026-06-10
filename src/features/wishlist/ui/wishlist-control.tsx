@@ -16,7 +16,7 @@ export function WishlistControl() {
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild={true}>
                 <Button
                     variant="ghost"
                     size="icon-md"
@@ -29,7 +29,7 @@ export function WishlistControl() {
                 </Button>
             </PopoverTrigger>
             <PopoverContent
-                forceMount
+                forceMount={true}
                 align="end"
                 sideOffset={10}
                 className="p-0 border-0 shadow-none w-auto bg-transparent"
