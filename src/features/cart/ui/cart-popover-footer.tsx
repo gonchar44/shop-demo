@@ -28,7 +28,7 @@ export function CartPopoverFooter({ subtotalCents, subtotalCurrency }: CartPopov
                     </motion.span>
                 </AnimatePresence>
             </div>
-            <Button disabled variant="primary" size="md" className="w-full" aria-label="Proceed to checkout">
+            <Button disabled={true} variant="primary" size="md" className="w-full" aria-label="Proceed to checkout">
                 <ArrowRightIcon className="size-4" strokeWidth={1.9} />
                 Checkout
             </Button>

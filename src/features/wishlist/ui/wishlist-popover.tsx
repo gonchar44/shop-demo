@@ -64,7 +64,7 @@ export function WishlistPopover() {
                         )}
                     </AnimatePresence>
                 </div>
-                <PopoverClose asChild>
+                <PopoverClose asChild={true}>
                     <Button variant="outlined" size="icon-sm" shape="circle" aria-label="Close wishlist">
                         <XIcon className="size-4" />
                     </Button>

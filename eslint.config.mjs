@@ -7,6 +7,11 @@ const eslintConfig = defineConfig([
     ...nextVitals,
     ...nextTs,
     eslintConfigPrettier,
+    {
+        rules: {
+            "react/jsx-boolean-value": ["error", "always"],
+        },
+    },
     // Override default ignores of eslint-config-next.
     globalIgnores([
         // Default ignores of eslint-config-next:
