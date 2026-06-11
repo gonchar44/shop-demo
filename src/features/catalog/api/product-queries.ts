@@ -1,6 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 import { apiGet } from "@/shared/lib/api";
-import type { ProductListParams, ProductListResponse } from "@/features/catalog/model/product.types";
+import type {
+    ProductListParams,
+    ProductListResponse,
+    SuggestionsResponse,
+} from "@/features/catalog/model/product.types";
 
 export const productKeys = {
     all: ["products"] as const,
@@ -26,4 +30,18 @@ function getProducts(params: ProductListParams) {
     }
 
     return apiGet<ProductListResponse>(`/api/products?${searchParams.toString()}`);
+}
+
+export const suggestionsKeys = {
+    all: ["suggestions"] as const,
+    byQuery: (q: string) => [...suggestionsKeys.all, q] as const,
+};
+
+export function suggestionsQueryOptions(q: string) {
+    return queryOptions({
+        queryKey: suggestionsKeys.byQuery(q),
+        queryFn: () => apiGet<SuggestionsResponse>(`/api/products/suggestions?q=${encodeURIComponent(q)}`),
+        enabled: q.trim().length >= 2,
+        staleTime: 30_000,
+    });
 }
