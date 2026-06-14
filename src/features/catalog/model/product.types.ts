@@ -47,3 +47,18 @@ export type ProductListResponse = {
         hasPrev: boolean;
     };
 };
+
+export type ProductSuggestion = {
+    id: string;
+    slug: string;
+    name: string;
+    thumbnail: string;
+    priceCents: number;
+    currency: string;
+    category: ProductAttribute;
+};
+
+export type SuggestionsResponse = {
+    products: ProductSuggestion[];
+    categories: ProductAttribute[];
+};
