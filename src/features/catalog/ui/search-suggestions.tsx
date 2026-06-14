@@ -81,7 +81,10 @@ export function SearchSuggestions({
                                             const itemIndex = products.length + index;
                                             return (
                                                 <Button
-                                                    className={cn("h-7", focusedIndex === itemIndex && "bg-gray-950 text-white")}
+                                                    className={cn(
+                                                        "h-7",
+                                                        focusedIndex === itemIndex && "bg-gray-950 text-white",
+                                                    )}
                                                     variant="secondary"
                                                     size="sm"
                                                     role="option"
