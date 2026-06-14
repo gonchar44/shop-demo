@@ -48,7 +48,8 @@ export function ProductSearch() {
 
     const products = data?.products ?? [];
     const categories = data?.categories ?? [];
-    const totalItems = products.length + categories.length + 1; // +1 for "see all"
+    const hasResults = products.length > 0 || categories.length > 0;
+    const totalItems = hasResults ? products.length + categories.length + 1 : 0;
     const showDropdown = isOpen && value.trim().length >= 2;
 
     function triggerSearch(currentValue: string) {
@@ -106,25 +107,26 @@ export function ProductSearch() {
 
         if (e.key === "ArrowDown") {
             e.preventDefault();
-            setFocusedIndex((prev) => (prev + 1) % totalItems);
+            if (totalItems > 0) setFocusedIndex((prev) => (prev + 1) % totalItems);
             return;
         }
 
         if (e.key === "ArrowUp") {
             e.preventDefault();
-            setFocusedIndex((prev) => (prev <= 0 ? totalItems - 1 : prev - 1));
+            if (totalItems > 0) setFocusedIndex((prev) => (prev <= 0 ? totalItems - 1 : prev - 1));
             return;
         }
 
         if (e.key === "Enter") {
             e.preventDefault();
             const seeAllIndex = products.length + categories.length;
-            if (focusedIndex < 0 || focusedIndex === seeAllIndex) {
+            const clampedIndex = focusedIndex > seeAllIndex ? seeAllIndex : focusedIndex;
+            if (clampedIndex < 0 || clampedIndex === seeAllIndex) {
                 triggerSearch(value);
-            } else if (focusedIndex < products.length) {
-                handleProductSelect(products[focusedIndex].slug);
+            } else if (clampedIndex < products.length) {
+                handleProductSelect(products[clampedIndex].slug);
             } else {
-                handleCategorySelect(categories[focusedIndex - products.length].slug);
+                handleCategorySelect(categories[clampedIndex - products.length].slug);
             }
         }
     }
