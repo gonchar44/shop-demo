@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
+import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { formatPrice } from "@/features/catalog/lib/price";
 import type { ProductSuggestion } from "@/features/catalog/model/product.types";
@@ -17,7 +18,7 @@ export function ProductSuggestionItem({ product, isFocused, onSelect }: ProductS
         <Button
             variant="ghost"
             size="lg"
-            className="text-left px-2 py-2.5 h-auto w-full"
+            className={cn("text-left px-2 py-2.5 h-auto w-full", isFocused && "bg-gray-100")}
             role="option"
             aria-selected={isFocused}
             onClick={() => onSelect(product.slug)}

@@ -81,7 +81,7 @@ export function SearchSuggestions({
                                             const itemIndex = products.length + index;
                                             return (
                                                 <Button
-                                                    className="h-7"
+                                                    className={cn("h-7", focusedIndex === itemIndex && "bg-gray-950 text-white")}
                                                     variant="secondary"
                                                     size="sm"
                                                     role="option"
@@ -102,7 +102,7 @@ export function SearchSuggestions({
                                 <Button
                                     variant="ghost"
                                     size="md"
-                                    className="w-full"
+                                    className={cn("w-full", focusedIndex === seeAllIndex && "bg-gray-100")}
                                     role="option"
                                     aria-selected={focusedIndex === seeAllIndex}
                                     onClick={onSeeAll}
