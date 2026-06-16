@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { connection } from "next/server";
@@ -7,6 +8,11 @@ import { getQueryClient } from "@/shared/lib/query-client.server";
 import { ProductList } from "@/features/catalog/ui/product-list";
 import { ProductSearch } from "@/features/catalog/ui/product-search";
 import { Skeleton } from "@/shared/ui/skeleton";
+
+export const metadata: Metadata = {
+    title: "Catalog",
+    description: "Browse all available products in the Shop Demo catalog.",
+};
 
 const CATALOG_LIMIT = 10;
 
