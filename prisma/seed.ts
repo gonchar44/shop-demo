@@ -595,7 +595,37 @@ const activeSeedIds = {
 
 const staleSeedIds = (legacyIds: string[], activeIds: string[]) => legacyIds.filter((id) => !activeIds.includes(id));
 
+const shippingOptions = [
+    {
+        id: "seed-shipping-standard",
+        methodId: "standard",
+        label: "Standard",
+        description: "5–7 business days",
+        priceCents: 499,
+        freeAboveSubtotalCents: 7500,
+        sortOrder: 0,
+    },
+    {
+        id: "seed-shipping-express",
+        methodId: "express",
+        label: "Express",
+        description: "1–2 business days",
+        priceCents: 1499,
+        freeAboveSubtotalCents: null,
+        sortOrder: 1,
+    },
+];
+
 async function main() {
+    for (const option of shippingOptions) {
+        await prisma.shippingOption.upsert({
+            where: { id: option.id },
+            update: option,
+            create: option,
+        });
+    }
+    console.log(`Seeded ${shippingOptions.length} shipping options.`);
+
     for (const category of categories) {
         await prisma.category.upsert({
             where: { id: category.id },
