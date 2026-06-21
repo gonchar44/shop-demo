@@ -15,7 +15,9 @@ export function CheckoutField({ label, htmlFor, error, optional, children, class
     return (
         <div className={cn("flex flex-col gap-1.5", className)}>
             <label htmlFor={htmlFor} className="flex items-center justify-between">
-                <span className="text-xs font-medium text-gray-700 tracking-wide">{label}</span>
+                <span className={cn("text-xs font-medium tracking-wide", error ? "text-destructive" : "text-gray-700")}>
+                    {label}
+                </span>
                 {optional && <span className="text-xs text-gray-400">Optional</span>}
             </label>
             {children}

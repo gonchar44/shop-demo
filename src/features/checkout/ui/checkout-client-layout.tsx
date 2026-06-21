@@ -1,17 +1,24 @@
 "use client";
 
+import Link from "next/link";
+import { ArrowLeftIcon, ShoppingBagIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCartStore } from "@/features/cart/store/cart.store";
 import { checkoutSchema } from "@/features/checkout/model/checkout.schema";
 import type { CheckoutFormValues, ShippingOption } from "@/features/checkout/model/checkout.types";
 import { CheckoutForm } from "@/features/checkout/ui/checkout-form";
 import { CheckoutOrderSummary } from "@/features/checkout/ui/checkout-order-summary";
+import { buttonVariants } from "@/shared/ui/button";
+import { EmptyState } from "@/shared/ui/empty-state";
 
 type CheckoutClientLayoutProps = {
     shippingOptions: ShippingOption[];
 };
 
 export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutProps) {
+    const items = useCartStore((s) => s.items);
+
     const methods = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutSchema),
         defaultValues: {
@@ -30,6 +37,22 @@ export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutPr
     function onSubmit(data: CheckoutFormValues) {
         // TODO: wire up to Stripe payment
         console.log("Checkout submitted:", data);
+    }
+
+    if (items.length === 0) {
+        return (
+            <EmptyState
+                icon={ShoppingBagIcon}
+                heading="Nothing here yet"
+                subtext="Add some items to your cart and come back to complete your purchase."
+                action={
+                    <Link href="/catalog" className={buttonVariants({ variant: "primary", size: "md" })}>
+                        <ArrowLeftIcon className="size-4.5" strokeWidth={1.9} />
+                        Continue Shopping
+                    </Link>
+                }
+            />
+        );
     }
 
     return (

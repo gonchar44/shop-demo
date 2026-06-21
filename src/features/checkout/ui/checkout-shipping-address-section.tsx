@@ -1,6 +1,7 @@
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import type { CheckoutFormValues } from "@/features/checkout/model/checkout.types";
 import { CheckoutField } from "@/features/checkout/ui/checkout-field";
+import { CheckoutAddressAutocomplete } from "@/features/checkout/ui/checkout-address-autocomplete";
 import { Input } from "@/shared/ui/input";
 import { cn } from "@/shared/lib/utils";
 
@@ -38,17 +39,7 @@ export function CheckoutShippingAddressSection({ register, errors }: CheckoutShi
                 </CheckoutField>
             </div>
 
-            <CheckoutField label="Address" htmlFor="address" error={errors.address?.message}>
-                <Input
-                    id="address"
-                    placeholder="123 Main Street"
-                    autoComplete="address-line1"
-                    aria-invalid={!!errors.address}
-                    aria-describedby={errors.address ? "address-error" : undefined}
-                    className={cn(errors.address && "border-destructive")}
-                    {...register("address")}
-                />
-            </CheckoutField>
+            <CheckoutAddressAutocomplete />
 
             <CheckoutField
                 label="Address Line 2"

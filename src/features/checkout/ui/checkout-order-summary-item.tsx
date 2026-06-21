@@ -57,9 +57,7 @@ export function CheckoutOrderSummaryItem({ product, quantity, showTopBorder }: C
                         {formatPrice(compareAtLineTotalCents!, product.currency)}
                     </span>
                 )}
-                <span className="text-sm font-bold text-gray-950">
-                    {formatPrice(lineTotalCents, product.currency)}
-                </span>
+                <span className="text-sm font-bold text-gray-950">{formatPrice(lineTotalCents, product.currency)}</span>
             </div>
         </li>
     );

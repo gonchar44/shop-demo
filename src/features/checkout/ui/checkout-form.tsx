@@ -35,8 +35,9 @@ export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
 
     const itemMap = Object.fromEntries(items.map((i) => [i.id, i]));
     const subtotalCents = products.reduce((sum, p) => {
-        const qty = itemMap[p.id]?.quantity ?? 1;
-        return sum + p.priceCents * qty;
+        const item = itemMap[p.id];
+        if (!item) return sum;
+        return sum + p.priceCents * item.quantity;
     }, 0);
 
     return (
