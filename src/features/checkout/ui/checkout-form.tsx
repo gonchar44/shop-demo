@@ -1,13 +1,10 @@
-"use client";
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import type { SubmitHandler } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ArrowRightIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useCartStore } from "@/features/cart/store/cart.store";
 import { cartProductsQueryOptions } from "@/features/cart/api/cart-product-queries";
-import { checkoutSchema } from "@/features/checkout/model/checkout.schema";
 import type { CheckoutFormValues, ShippingOption } from "@/features/checkout/model/checkout.types";
 import { CheckoutContactSection } from "@/features/checkout/ui/checkout-contact-section";
 import { CheckoutShippingAddressSection } from "@/features/checkout/ui/checkout-shipping-address-section";
@@ -17,9 +14,17 @@ import { Button } from "@/shared/ui/button";
 
 type CheckoutFormProps = {
     shippingOptions: ShippingOption[];
+    onSubmit: SubmitHandler<CheckoutFormValues>;
 };
 
-export function CheckoutForm({ shippingOptions }: CheckoutFormProps) {
+export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
+    const {
+        register,
+        watch,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useFormContext<CheckoutFormValues>();
+
     const items = useCartStore((s) => s.items);
     const ids = items.map((i) => i.id);
 
@@ -34,33 +39,8 @@ export function CheckoutForm({ shippingOptions }: CheckoutFormProps) {
         return sum + p.priceCents * qty;
     }, 0);
 
-    const {
-        register,
-        watch,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<CheckoutFormValues>({
-        resolver: zodResolver(checkoutSchema),
-        defaultValues: {
-            email: "",
-            firstName: "",
-            lastName: "",
-            address: "",
-            addressLine2: "",
-            city: "",
-            country: "",
-            postalCode: "",
-            shippingMethod: "standard",
-        },
-    });
-
-    function onSubmit(data: CheckoutFormValues) {
-        // TODO: wire up to Stripe payment
-        console.log("Checkout submitted:", data);
-    }
-
     return (
-        <form onSubmit={handleSubmit(onSubmit)} noValidate={true}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate={true} className="flex-1 min-w-0">
             <div className="flex flex-col divide-y divide-gray-200">
                 <motion.section
                     initial={{ opacity: 0, y: 10 }}
