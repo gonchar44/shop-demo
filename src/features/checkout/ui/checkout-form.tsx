@@ -20,7 +20,7 @@ type CheckoutFormProps = {
 export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
     const {
         register,
-        watch,
+        control,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useFormContext<CheckoutFormValues>();
@@ -71,8 +71,7 @@ export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
                 >
                     <CheckoutSectionHeader number="03" title="Shipping Method" />
                     <CheckoutShippingMethodSection
-                        register={register}
-                        watch={watch}
+                        control={control}
                         subtotalCents={subtotalCents}
                         shippingOptions={shippingOptions}
                     />
