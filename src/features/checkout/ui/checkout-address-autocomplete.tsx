@@ -31,6 +31,7 @@ export function CheckoutAddressAutocomplete() {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const justSelectedRef = useRef(false);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     const fetchSuggestions = useCallback(async (text: string) => {
         if (text.length < 3) {
@@ -38,18 +39,32 @@ export function CheckoutAddressAutocomplete() {
             setIsOpen(false);
             return;
         }
+
+        abortControllerRef.current?.abort();
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+
         setIsLoading(true);
         try {
-            const res = await fetch(`/api/address-autocomplete?text=${encodeURIComponent(text)}`);
-            if (!res.ok) return;
+            const res = await fetch(`/api/address-autocomplete?text=${encodeURIComponent(text)}`, {
+                signal: controller.signal,
+            });
+            if (!res.ok) {
+                setSuggestions([]);
+                setIsOpen(false);
+                return;
+            }
             const data: GeoapifyAutocompleteResponse = await res.json();
             const results = data.results ?? [];
             setSuggestions(results);
             setIsOpen(results.length > 0);
-        } catch {
+        } catch (err) {
+            if (err instanceof Error && err.name === "AbortError") return;
             // silent — degrades to manual input
         } finally {
-            setIsLoading(false);
+            if (!controller.signal.aborted) {
+                setIsLoading(false);
+            }
         }
     }, []);
 
@@ -64,6 +79,7 @@ export function CheckoutAddressAutocomplete() {
         debounceRef.current = setTimeout(() => fetchSuggestions(query), 300);
         return () => {
             if (debounceRef.current) clearTimeout(debounceRef.current);
+            abortControllerRef.current?.abort();
         };
     }, [query, fetchSuggestions]);
 
