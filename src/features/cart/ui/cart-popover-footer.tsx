@@ -2,8 +2,12 @@
 
 import { ArrowRightIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { formatPrice } from "@/features/catalog/lib/price";
-import { Button } from "@/shared/ui/button";
+import { buttonVariants } from "@/shared/ui/button";
+import { cn } from "@/shared/lib/utils";
+import { PopoverClose } from "@/shared/ui/popover";
 
 type CartPopoverFooterProps = {
     subtotalCents: number;
@@ -11,6 +15,8 @@ type CartPopoverFooterProps = {
 };
 
 export function CartPopoverFooter({ subtotalCents, subtotalCurrency }: CartPopoverFooterProps) {
+    const isOnCheckout = usePathname() === "/checkout";
+
     return (
         <div className="px-5 py-4 border-t border-gray-200 flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -28,10 +34,18 @@ export function CartPopoverFooter({ subtotalCents, subtotalCurrency }: CartPopov
                     </motion.span>
                 </AnimatePresence>
             </div>
-            <Button disabled={true} variant="primary" size="md" className="w-full" aria-label="Proceed to checkout">
-                <ArrowRightIcon className="size-4" strokeWidth={1.9} />
-                Checkout
-            </Button>
+            {!isOnCheckout && (
+                <PopoverClose asChild={true}>
+                    <Link
+                        href="/checkout"
+                        className={cn(buttonVariants({ variant: "primary", size: "md" }), "w-full")}
+                        aria-label="Proceed to checkout"
+                    >
+                        <ArrowRightIcon className="size-4" strokeWidth={1.9} />
+                        Checkout
+                    </Link>
+                </PopoverClose>
+            )}
         </div>
     );
 }

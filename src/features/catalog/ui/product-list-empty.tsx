@@ -55,5 +55,5 @@ export function ProductListEmpty({ variant, onRetry, onClearSearch }: ProductLis
             );
     }
 
-    return <EmptyState icon={Icon} heading={heading} subtext={subtext} action={resolveAction()} />;
+    return <EmptyState icon={<Icon />} heading={heading} subtext={subtext} action={resolveAction()} />;
 }
