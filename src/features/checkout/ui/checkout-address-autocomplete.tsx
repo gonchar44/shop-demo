@@ -208,11 +208,13 @@ export function CheckoutAddressAutocomplete() {
                                     />
                                     <div className="min-w-0 flex-1">
                                         <p className="text-sm font-medium text-gray-950 leading-snug truncate">
-                                            {s.address_line1}
+                                            {s.address_line1 ?? s.formatted}
                                         </p>
-                                        <p className="text-xs text-gray-400 leading-snug mt-0.5 truncate">
-                                            {s.address_line2}
-                                        </p>
+                                        {s.address_line2 && (
+                                            <p className="text-xs text-gray-400 leading-snug mt-0.5 truncate">
+                                                {s.address_line2}
+                                            </p>
+                                        )}
                                     </div>
                                 </motion.li>
                             ))}
