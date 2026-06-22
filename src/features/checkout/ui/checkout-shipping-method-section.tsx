@@ -17,14 +17,14 @@ export function CheckoutShippingMethodSection({
     subtotalCents,
     shippingOptions,
 }: CheckoutShippingMethodSectionProps) {
-    const anyOptionFree = shippingOptions.some(
+    const freeOption = shippingOptions.find(
         (o) => o.freeAboveSubtotalCents !== null && subtotalCents >= o.freeAboveSubtotalCents,
     );
 
     return (
         <div className="flex flex-col gap-3">
             <AnimatePresence>
-                {anyOptionFree && (
+                {freeOption && (
                     <motion.p
                         initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                         animate={{ opacity: 1, height: "auto", marginBottom: 4 }}
@@ -32,7 +32,7 @@ export function CheckoutShippingMethodSection({
                         transition={{ duration: 0.2 }}
                         className="text-xs font-medium text-green-700 overflow-hidden"
                     >
-                        Your order qualifies for free standard shipping!
+                        Your order qualifies for free {freeOption.label.toLowerCase()} shipping!
                     </motion.p>
                 )}
             </AnimatePresence>
