@@ -30,7 +30,7 @@ export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutPr
             city: "",
             country: "",
             postalCode: "",
-            shippingMethod: "standard",
+            shippingMethod: shippingOptions[0]?.methodId ?? "standard",
         },
     });
 
