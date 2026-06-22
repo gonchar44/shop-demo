@@ -1,5 +1,8 @@
 import { prisma } from "@/shared/db/prisma";
-import type { ShippingOption, ShippingOptionId } from "@/features/checkout/model/checkout.types";
+import { checkoutSchema } from "@/features/checkout/model/checkout.schema";
+import type { ShippingOption } from "@/features/checkout/model/checkout.types";
+
+const shippingMethodEnum = checkoutSchema.shape.shippingMethod;
 
 export async function getShippingOptions(): Promise<ShippingOption[]> {
     const rows = await prisma.shippingOption.findMany({
@@ -15,6 +18,6 @@ export async function getShippingOptions(): Promise<ShippingOption[]> {
 
     return rows.map((row) => ({
         ...row,
-        methodId: row.methodId as ShippingOptionId,
+        methodId: shippingMethodEnum.parse(row.methodId),
     }));
 }
