@@ -1,8 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import { motion } from "motion/react";
-import type { LucideIcon } from "lucide-react";
 import { fadeUpContainer, fadeUpItem } from "@/shared/lib/motion";
 import { cn } from "@/shared/lib/utils";
 
@@ -24,14 +23,14 @@ const sizeMap = {
 };
 
 type EmptyStateProps = {
-    icon: LucideIcon;
+    icon: React.ReactElement<{ className?: string; strokeWidth?: number | string }>;
     heading: string;
     subtext: string;
     action?: ReactNode;
     size?: keyof typeof sizeMap;
 };
 
-export function EmptyState({ icon: Icon, heading, subtext, action, size = "default" }: EmptyStateProps) {
+export function EmptyState({ icon, heading, subtext, action, size = "default" }: EmptyStateProps) {
     const s = sizeMap[size];
 
     return (
@@ -45,7 +44,7 @@ export function EmptyState({ icon: Icon, heading, subtext, action, size = "defau
                 className={cn("bg-gray-100 flex items-center justify-center", s.iconWrap)}
                 variants={fadeUpItem}
             >
-                <Icon className={cn("text-gray-400", s.icon)} strokeWidth={1.5} />
+                {React.cloneElement(icon, { className: cn("text-gray-400", s.icon), strokeWidth: 1.5 })}
             </motion.div>
 
             <motion.div className={cn("flex flex-col items-center", s.textWrap)} variants={fadeUpItem}>

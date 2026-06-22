@@ -36,7 +36,7 @@ export default async function CheckoutPage() {
         return (
             <main className="py-8">
                 <EmptyState
-                    icon={AlertCircleIcon}
+                    icon={<AlertCircleIcon />}
                     heading="Checkout Unavailable"
                     subtext={errorMessage}
                     action={browseCatalogAction}

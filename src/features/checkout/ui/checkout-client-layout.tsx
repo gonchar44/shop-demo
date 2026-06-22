@@ -42,7 +42,7 @@ export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutPr
     if (items.length === 0) {
         return (
             <EmptyState
-                icon={ShoppingBagIcon}
+                icon={<ShoppingBagIcon />}
                 heading="Nothing here yet"
                 subtext="Add some items to your cart and come back to complete your purchase."
                 action={
