@@ -59,6 +59,7 @@ export function CheckoutShippingMethodSection({
                                     <div
                                         className={cn(
                                             "flex flex-col gap-1.5 p-4 rounded-2xl border transition-all duration-150",
+                                            "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gray-950 has-[:focus-visible]:ring-offset-2",
                                             isSelected
                                                 ? "border-gray-950 bg-gray-100"
                                                 : "border-gray-200 bg-white hover:border-gray-300",
