@@ -40,9 +40,16 @@ export function WishlistPopoverItem({ product, showTopBorder, onToggle }: Wishli
                     {product.category.name}
                 </p>
                 <p className="text-sm font-semibold text-gray-950 truncate leading-snug">{product.name}</p>
-                <p className="text-sm font-bold text-gray-950 mt-1">
-                    {formatPrice(product.priceCents, product.currency)}
-                </p>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-sm font-bold text-gray-950">
+                        {formatPrice(product.priceCents, product.currency)}
+                    </span>
+                    {product.compareAtCents !== null && product.compareAtCents > product.priceCents && (
+                        <span className="text-xs text-gray-400 line-through">
+                            {formatPrice(product.compareAtCents, product.currency)}
+                        </span>
+                    )}
+                </div>
             </div>
 
             {/* Actions */}
