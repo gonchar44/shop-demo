@@ -44,7 +44,7 @@ export function WishlistPopoverItem({ product, showTopBorder, onToggle }: Wishli
                     <span className="text-sm font-bold text-gray-950">
                         {formatPrice(product.priceCents, product.currency)}
                     </span>
-                    {product.compareAtCents && product.compareAtCents > product.priceCents && (
+                    {product.compareAtCents !== null && product.compareAtCents > product.priceCents && (
                         <span className="text-xs text-gray-400 line-through">
                             {formatPrice(product.compareAtCents, product.currency)}
                         </span>
