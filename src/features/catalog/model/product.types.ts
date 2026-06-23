@@ -54,6 +54,7 @@ export type ProductSuggestion = {
     name: string;
     thumbnail: string;
     priceCents: number;
+    compareAtCents: number | null;
     currency: string;
     category: ProductAttribute;
 };

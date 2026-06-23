@@ -41,9 +41,16 @@ export function ProductSuggestionItem({ product, isFocused, onSelect }: ProductS
                     {product.category.name}
                 </p>
                 <p className="text-sm font-semibold text-gray-950 truncate leading-snug">{product.name}</p>
-                <p className="text-sm font-semibold text-gray-700 mt-0.5">
-                    {formatPrice(product.priceCents, product.currency)}
-                </p>
+                <div className="flex items-baseline gap-1.5 mt-0.5">
+                    <span className="text-sm font-semibold text-gray-700">
+                        {formatPrice(product.priceCents, product.currency)}
+                    </span>
+                    {product.compareAtCents && product.compareAtCents > product.priceCents && (
+                        <span className="text-xs text-gray-400 line-through">
+                            {formatPrice(product.compareAtCents, product.currency)}
+                        </span>
+                    )}
+                </div>
             </div>
         </Button>
     );

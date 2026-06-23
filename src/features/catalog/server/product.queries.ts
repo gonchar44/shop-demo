@@ -126,6 +126,7 @@ export async function getProductSuggestions(q: string): Promise<SuggestionsRespo
                 name: true,
                 thumbnail: true,
                 priceCents: true,
+                compareAtCents: true,
                 currency: true,
                 category: { select: { id: true, slug: true, name: true } },
             },
