@@ -45,7 +45,7 @@ export function ProductSuggestionItem({ product, isFocused, onSelect }: ProductS
                     <span className="text-sm font-semibold text-gray-700">
                         {formatPrice(product.priceCents, product.currency)}
                     </span>
-                    {product.compareAtCents && product.compareAtCents > product.priceCents && (
+                    {product.compareAtCents !== null && product.compareAtCents > product.priceCents && (
                         <span className="text-xs text-gray-400 line-through">
                             {formatPrice(product.compareAtCents, product.currency)}
                         </span>
