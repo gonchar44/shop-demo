@@ -27,10 +27,7 @@ export function CheckoutCardVisual({ cardNumber, cardholderName, expiry, isFlipp
                 }}
             >
                 {/* Front */}
-                <div
-                    className="absolute inset-0 rounded-2xl overflow-hidden"
-                    style={{ backfaceVisibility: "hidden" }}
-                >
+                <div className="absolute inset-0 rounded-2xl overflow-hidden" style={{ backfaceVisibility: "hidden" }}>
                     <div className="absolute inset-0 bg-gray-950" />
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-700/25 via-transparent to-gray-900/40" />
                     <div

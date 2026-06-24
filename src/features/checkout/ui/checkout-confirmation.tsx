@@ -19,7 +19,10 @@ export function CheckoutConfirmation({ orderRef, email }: CheckoutConfirmationPr
             animate="visible"
             className="flex flex-col items-center text-center gap-6 py-12 max-w-md mx-auto"
         >
-            <motion.div variants={fadeUpItem} className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
+            <motion.div
+                variants={fadeUpItem}
+                className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full"
+            >
                 <CheckCircle2Icon className="size-8 text-gray-950" strokeWidth={1.5} />
             </motion.div>
 

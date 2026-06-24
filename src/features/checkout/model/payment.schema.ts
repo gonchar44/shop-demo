@@ -1,10 +1,7 @@
 import { z } from "zod";
 
 export const paymentSchema = z.object({
-    cardNumber: z.string().refine(
-        (val) => /^\d{16}$/.test(val.replace(/\s/g, "")),
-        "Card number must be 16 digits",
-    ),
+    cardNumber: z.string().refine((val) => /^\d{16}$/.test(val.replace(/\s/g, "")), "Card number must be 16 digits"),
     cardholderName: z.string().trim().min(1, "Cardholder name is required"),
     expiry: z
         .string()
