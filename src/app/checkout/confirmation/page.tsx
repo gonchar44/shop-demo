@@ -21,9 +21,20 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
     let email: string | undefined;
     if (raw) {
         try {
-            const parsed = JSON.parse(raw) as { orderRef?: string; email?: string };
-            if (parsed.orderRef === orderRef) {
-                email = parsed.email;
+            const parsed: unknown = JSON.parse(raw);
+            if (
+                parsed !== null &&
+                typeof parsed === "object" &&
+                !Array.isArray(parsed)
+            ) {
+                const data = parsed as Record<string, unknown>;
+                if (
+                    typeof data.orderRef === "string" &&
+                    typeof data.email === "string" &&
+                    data.orderRef === orderRef
+                ) {
+                    email = data.email;
+                }
             }
         } catch {
             // malformed cookie — fall through to redirect
