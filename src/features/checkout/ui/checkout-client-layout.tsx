@@ -10,6 +10,7 @@ import { checkoutSchema } from "@/features/checkout/model/checkout.schema";
 import type { CheckoutFormValues, ShippingOption } from "@/features/checkout/model/checkout.types";
 import { CheckoutForm } from "@/features/checkout/ui/checkout-form";
 import { CheckoutOrderSummary } from "@/features/checkout/ui/checkout-order-summary";
+import { storeCheckoutEmail } from "@/features/checkout/server/checkout.actions";
 import { buttonVariants } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 
@@ -36,8 +37,9 @@ export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutPr
         },
     });
 
-    function onSubmit(data: CheckoutFormValues) {
-        router.push(`/checkout/payment?email=${encodeURIComponent(data.email)}`);
+    async function onSubmit(data: CheckoutFormValues) {
+        await storeCheckoutEmail(data.email);
+        router.push("/checkout/payment");
     }
 
     if (items.length === 0) {

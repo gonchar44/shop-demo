@@ -1,8 +1,22 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { z } from "zod";
 import { paymentSchema } from "@/features/checkout/model/payment.schema";
 import type { PaymentFormValues } from "@/features/checkout/model/payment.schema";
+
+export async function storeCheckoutEmail(email: string): Promise<void> {
+    const parsed = z.string().email().safeParse(email);
+    if (!parsed.success) return;
+
+    const cookieStore = await cookies();
+    cookieStore.set("checkout-email", parsed.data, {
+        httpOnly: true,
+        sameSite: "strict",
+        path: "/checkout/payment",
+        maxAge: 60 * 5,
+    });
+}
 
 type SubmitPaymentResult = { success: true; orderRef: string } | { success: false; error: string };
 

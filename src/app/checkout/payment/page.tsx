@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { CheckoutPaymentView } from "@/features/checkout/ui/checkout-payment-view";
 
@@ -6,12 +7,9 @@ export const metadata: Metadata = {
     title: "Payment",
 };
 
-type PaymentPageProps = {
-    searchParams: Promise<{ email?: string }>;
-};
-
-export default async function PaymentPage({ searchParams }: PaymentPageProps) {
-    const { email } = await searchParams;
+export default async function PaymentPage() {
+    const cookieStore = await cookies();
+    const email = cookieStore.get("checkout-email")?.value;
 
     if (!email) {
         redirect("/checkout");
