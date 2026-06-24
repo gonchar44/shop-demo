@@ -22,17 +22,9 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
     if (raw) {
         try {
             const parsed: unknown = JSON.parse(raw);
-            if (
-                parsed !== null &&
-                typeof parsed === "object" &&
-                !Array.isArray(parsed)
-            ) {
+            if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) {
                 const data = parsed as Record<string, unknown>;
-                if (
-                    typeof data.orderRef === "string" &&
-                    typeof data.email === "string" &&
-                    data.orderRef === orderRef
-                ) {
+                if (typeof data.orderRef === "string" && typeof data.email === "string" && data.orderRef === orderRef) {
                     email = data.email;
                 }
             }
