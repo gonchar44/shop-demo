@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeftIcon, ShoppingBagIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +19,7 @@ type CheckoutClientLayoutProps = {
 
 export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutProps) {
     const items = useCartStore((s) => s.items);
+    const router = useRouter();
 
     const methods = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutSchema),
@@ -35,8 +37,7 @@ export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutPr
     });
 
     function onSubmit(data: CheckoutFormValues) {
-        // TODO: wire up to Stripe payment
-        console.log("Checkout submitted:", data);
+        router.push(`/checkout/payment?email=${encodeURIComponent(data.email)}`);
     }
 
     if (items.length === 0) {
