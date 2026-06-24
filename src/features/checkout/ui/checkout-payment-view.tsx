@@ -59,13 +59,17 @@ export function CheckoutPaymentView({ email }: CheckoutPaymentViewProps) {
     const watchedExpiry = useWatch({ control, name: "expiry" });
 
     async function onSubmit(data: PaymentFormValues) {
-        const result = await submitMockPayment(data, email);
-        if (!result.success) {
-            showToast.error(result.error);
-            return;
+        try {
+            const result = await submitMockPayment(data, email);
+            if (!result.success) {
+                showToast.error(result.error);
+                return;
+            }
+            clearCart();
+            router.push(`/checkout/confirmation?orderRef=${encodeURIComponent(result.orderRef)}`);
+        } catch {
+            showToast.error("Something went wrong. Please try again.");
         }
-        clearCart();
-        router.push(`/checkout/confirmation?orderRef=${encodeURIComponent(result.orderRef)}`);
     }
 
     return (
