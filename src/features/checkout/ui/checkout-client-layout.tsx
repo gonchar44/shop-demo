@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeftIcon, ShoppingBagIcon } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +10,7 @@ import { checkoutSchema } from "@/features/checkout/model/checkout.schema";
 import type { CheckoutFormValues, ShippingOption } from "@/features/checkout/model/checkout.types";
 import { CheckoutForm } from "@/features/checkout/ui/checkout-form";
 import { CheckoutOrderSummary } from "@/features/checkout/ui/checkout-order-summary";
+import { storeCheckoutEmail } from "@/features/checkout/server/checkout.actions";
 import { buttonVariants } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 
@@ -18,6 +20,7 @@ type CheckoutClientLayoutProps = {
 
 export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutProps) {
     const items = useCartStore((s) => s.items);
+    const router = useRouter();
 
     const methods = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutSchema),
@@ -34,9 +37,9 @@ export function CheckoutClientLayout({ shippingOptions }: CheckoutClientLayoutPr
         },
     });
 
-    function onSubmit(data: CheckoutFormValues) {
-        // TODO: wire up to Stripe payment
-        console.log("Checkout submitted:", data);
+    async function onSubmit(data: CheckoutFormValues) {
+        await storeCheckoutEmail(data.email);
+        router.push("/checkout/payment");
     }
 
     if (items.length === 0) {
