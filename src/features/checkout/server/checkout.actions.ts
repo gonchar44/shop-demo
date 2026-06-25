@@ -15,6 +15,7 @@ export async function storeCheckoutEmail(email: string): Promise<void> {
         sameSite: "strict",
         path: "/checkout/payment",
         maxAge: 60 * 5,
+        secure: process.env.NODE_ENV === "production",
     });
 }
 
@@ -42,6 +43,7 @@ export async function submitMockPayment(data: PaymentFormValues, email: string):
         sameSite: "strict",
         path: "/checkout/confirmation",
         maxAge: 60 * 5,
+        secure: process.env.NODE_ENV === "production",
     });
 
     return { success: true, orderRef };
