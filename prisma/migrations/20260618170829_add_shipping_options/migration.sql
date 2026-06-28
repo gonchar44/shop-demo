@@ -7,6 +7,22 @@
 -- DropForeignKey
 ALTER TABLE "Product" DROP CONSTRAINT "Product_categoryId_fkey";
 
+-- Backfill: assign any NULL categoryId rows to an existing or placeholder category
+-- before the NOT NULL constraint is applied, so the migration is safe on live data.
+DO $$
+DECLARE
+  fallback_id TEXT;
+BEGIN
+  SELECT id INTO fallback_id FROM "Category" LIMIT 1;
+  IF fallback_id IS NULL THEN
+    INSERT INTO "Category" ("id", "slug", "name")
+    VALUES ('uncategorized', 'uncategorized', 'Uncategorized')
+    ON CONFLICT DO NOTHING;
+    fallback_id := 'uncategorized';
+  END IF;
+  UPDATE "Product" SET "categoryId" = fallback_id WHERE "categoryId" IS NULL;
+END $$;
+
 -- AlterTable
 ALTER TABLE "Product" ALTER COLUMN "images" DROP DEFAULT,
 ALTER COLUMN "categoryId" SET NOT NULL;
