@@ -43,7 +43,7 @@ export function ProductSearch() {
 
     const { data, isFetching } = useQuery({
         ...suggestionsQueryOptions(debouncedValue),
-        enabled: debouncedValue.trim().length >= 2,
+        enabled: isOpen && debouncedValue.trim().length >= 2,
     });
 
     const products = data?.products ?? [];

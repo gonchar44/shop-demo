@@ -624,6 +624,10 @@ async function main() {
             create: option,
         });
     }
+    const activeShippingIds = shippingOptions.map((option) => option.id);
+    await prisma.shippingOption.deleteMany({
+        where: { id: { notIn: activeShippingIds } },
+    });
     console.log(`Seeded ${shippingOptions.length} shipping options.`);
 
     for (const category of categories) {
