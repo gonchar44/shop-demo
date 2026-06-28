@@ -16,7 +16,6 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
 
     const cookieStore = await cookies();
     const raw = cookieStore.get("order-confirmation")?.value;
-    cookieStore.delete("order-confirmation");
 
     let email: string | undefined;
     if (raw) {
