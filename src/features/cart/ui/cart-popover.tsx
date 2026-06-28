@@ -82,7 +82,7 @@ export function CartPopover() {
             {/* Error state */}
             {isError && (
                 <EmptyState
-                    icon={AlertTriangleIcon}
+                    icon={<AlertTriangleIcon />}
                     heading="Something went wrong"
                     subtext="Couldn't load your cart. Please try again later."
                     size="sm"
@@ -92,7 +92,7 @@ export function CartPopover() {
             {/* Empty state */}
             {displayedProducts.length === 0 && !isLoading && !isFetching && !isPlaceholderData && !isError && (
                 <EmptyState
-                    icon={ShoppingCartIcon}
+                    icon={<ShoppingCartIcon />}
                     heading="Your cart is empty"
                     subtext="Add products you'd like to buy and find them here."
                     size="sm"

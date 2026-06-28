@@ -74,7 +74,7 @@ export function WishlistPopover() {
             {/* Error state */}
             {isError && (
                 <EmptyState
-                    icon={AlertTriangleIcon}
+                    icon={<AlertTriangleIcon />}
                     heading="Something went wrong"
                     subtext="Couldn't load your saved items. Please try again later."
                     size="sm"
@@ -84,7 +84,7 @@ export function WishlistPopover() {
             {/* Empty state */}
             {displayedProducts.length === 0 && !isLoading && !isFetching && !isPlaceholderData && !isError && (
                 <EmptyState
-                    icon={BookmarkIcon}
+                    icon={<BookmarkIcon />}
                     heading="No saved items"
                     subtext="Bookmark products you love and find them here."
                     size="sm"

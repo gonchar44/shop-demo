@@ -1,7 +1,7 @@
 "use client";
 
 import { type MouseEvent, type ReactNode } from "react";
-import { HandbagIcon, MinusIcon, PlusIcon } from "lucide-react";
+import { HandbagIcon, MinusIcon, PlusIcon, ShoppingCartIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { showToast } from "@/shared/lib/toast";
 import { Button } from "@/shared/ui/button";
@@ -59,6 +59,9 @@ export function CartQuantityControl({ productId, stock, variant = "card", classN
         if (quantity <= 1) {
             releasePointerFocus(event);
             removeFromCart(productId);
+            showToast.custom("Removed from cart", {
+                icon: <ShoppingCartIcon className="size-4" />,
+            });
             return;
         }
         updateQuantity(productId, quantity - 1, stock);

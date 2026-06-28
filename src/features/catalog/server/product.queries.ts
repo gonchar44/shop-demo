@@ -1,5 +1,11 @@
 import { prisma } from "@/shared/db/prisma";
-import type { ProductListItem, ProductListParams, ProductListResponse } from "@/features/catalog/model/product.types";
+import type {
+    ProductListItem,
+    ProductListParams,
+    ProductListResponse,
+    ProductSuggestion,
+    SuggestionsResponse,
+} from "@/features/catalog/model/product.types";
 
 const productListSelect = {
     id: true,
@@ -106,4 +112,37 @@ export async function getProductsByIds(ids: string[]): Promise<ProductListItem[]
         select: productListSelect,
     });
     return products.map(mapProductForList);
+}
+
+export async function getProductSuggestions(q: string): Promise<SuggestionsResponse> {
+    const where = buildProductWhere(q);
+
+    const [products, categories] = await Promise.all([
+        prisma.product.findMany({
+            where,
+            select: {
+                id: true,
+                slug: true,
+                name: true,
+                thumbnail: true,
+                priceCents: true,
+                compareAtCents: true,
+                currency: true,
+                category: { select: { id: true, slug: true, name: true } },
+            },
+            orderBy: [{ isFeatured: "desc" }, { name: "asc" }],
+            take: 5,
+        }),
+        prisma.category.findMany({
+            where: { name: { contains: q, mode: "insensitive" } },
+            select: { id: true, slug: true, name: true },
+            orderBy: { name: "asc" },
+            take: 3,
+        }),
+    ]);
+
+    return {
+        products: products as ProductSuggestion[],
+        categories,
+    };
 }

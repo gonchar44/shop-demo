@@ -69,6 +69,16 @@ model ProductVariant {
   updatedAt  DateTime  @updatedAt
 }
 
+model ShippingOption {
+  id                    String  @id @default(cuid())
+  methodId              String  @unique
+  label                 String
+  description           String
+  priceCents            Int
+  freeAboveSubtotalCents Int?
+  sortOrder             Int     @default(0)
+}
+
 model Product {
   id             String   @id @default(cuid())
   slug           String   @unique

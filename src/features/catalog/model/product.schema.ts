@@ -10,3 +10,7 @@ export const productListSearchParamsSchema = z.object({
         .optional()
         .transform((v) => v || undefined),
 });
+
+export const suggestionsSearchParamsSchema = z.object({
+    q: z.string().trim().min(2).max(80),
+});

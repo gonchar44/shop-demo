@@ -32,7 +32,7 @@ export function NotFoundView() {
                     >
                         Page
                         <br />
-                        Not Found
+                        Not Found.
                     </motion.h1>
 
                     {/* Subtext */}
