@@ -38,10 +38,11 @@ export const suggestionsKeys = {
 };
 
 export function suggestionsQueryOptions(q: string) {
+    const normalized = q.trim();
     return queryOptions({
-        queryKey: suggestionsKeys.byQuery(q),
-        queryFn: () => apiGet<SuggestionsResponse>(`/api/products/suggestions?q=${encodeURIComponent(q)}`),
-        enabled: q.trim().length >= 2,
+        queryKey: suggestionsKeys.byQuery(normalized),
+        queryFn: () => apiGet<SuggestionsResponse>(`/api/products/suggestions?q=${encodeURIComponent(normalized)}`),
+        enabled: normalized.length >= 2,
         staleTime: 30_000,
     });
 }
