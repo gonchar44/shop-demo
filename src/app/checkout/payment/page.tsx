@@ -18,7 +18,7 @@ export default async function PaymentPage() {
     return (
         <main className="py-8">
             <h1 className="text-2xl font-bold text-gray-950 mb-6 text-center">Payment</h1>
-            <CheckoutPaymentView email={email} />
+            <CheckoutPaymentView />
         </main>
     );
 }

@@ -16,10 +16,6 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { showToast } from "@/shared/lib/toast";
 
-type CheckoutPaymentViewProps = {
-    email: string;
-};
-
 function formatCardNumberInput(value: string) {
     const digits = value.replace(/\D/g, "").slice(0, 16);
     return digits.replace(/(.{4})/g, "$1 ").trim();
@@ -33,7 +29,7 @@ function formatExpiryInput(value: string) {
     return digits;
 }
 
-export function CheckoutPaymentView({ email }: CheckoutPaymentViewProps) {
+export function CheckoutPaymentView() {
     const router = useRouter();
     const clearCart = useCartStore((s) => s.clearCart);
     const [isCardFlipped, setIsCardFlipped] = useState(false);
@@ -60,7 +56,7 @@ export function CheckoutPaymentView({ email }: CheckoutPaymentViewProps) {
 
     async function onSubmit(data: PaymentFormValues) {
         try {
-            const result = await submitMockPayment(data, email);
+            const result = await submitMockPayment(data);
             if (!result.success) {
                 showToast.error(result.error);
                 return;

@@ -21,7 +21,7 @@ export async function storeCheckoutEmail(email: string): Promise<void> {
 
 type SubmitPaymentResult = { success: true; orderRef: string } | { success: false; error: string };
 
-export async function submitMockPayment(data: PaymentFormValues, email: string): Promise<SubmitPaymentResult> {
+export async function submitMockPayment(data: PaymentFormValues): Promise<SubmitPaymentResult> {
     const result = paymentSchema.safeParse({
         ...data,
         cardNumber: data.cardNumber.replace(/\s/g, ""),
@@ -31,13 +31,18 @@ export async function submitMockPayment(data: PaymentFormValues, email: string):
         return { success: false, error: "Invalid payment details." };
     }
 
+    const cookieStore = await cookies();
+    const email = cookieStore.get("checkout-email")?.value;
+    if (!email) {
+        return { success: false, error: "Session expired. Please restart checkout." };
+    }
+
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const suffix = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
     const orderRef = `ORD-${suffix}`;
 
-    const cookieStore = await cookies();
     cookieStore.set("order-confirmation", JSON.stringify({ orderRef, email }), {
         httpOnly: true,
         sameSite: "strict",
