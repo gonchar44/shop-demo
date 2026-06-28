@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     url.searchParams.set("format", "json");
 
     try {
-        const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000), next: { revalidate: 60 } });
+        const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000), cache: "no-store" });
         if (!res.ok) {
             console.error(`Geoapify API error: ${res.status} ${res.statusText}`);
             return Response.json({ error: "Geocoding service error" }, { status: 502 });
