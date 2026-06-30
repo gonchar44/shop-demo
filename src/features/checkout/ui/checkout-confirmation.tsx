@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle2Icon, ArrowRightIcon, HomeIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { fadeUpContainer, fadeUpItem } from "@/shared/lib/motion";
 import { buttonVariants } from "@/shared/ui/button";
-import { deleteOrderConfirmationCookie } from "@/features/checkout/server/checkout.actions";
 
 type CheckoutConfirmationProps = {
     orderRef: string;
@@ -14,10 +12,6 @@ type CheckoutConfirmationProps = {
 };
 
 export function CheckoutConfirmation({ orderRef, email }: CheckoutConfirmationProps) {
-    useEffect(() => {
-        void deleteOrderConfirmationCookie();
-    }, []);
-
     return (
         <motion.div
             variants={fadeUpContainer}

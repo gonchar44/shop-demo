@@ -53,8 +53,3 @@ export async function submitMockPayment(data: PaymentFormValues): Promise<Submit
 
     return { success: true, orderRef };
 }
-
-export async function deleteOrderConfirmationCookie(): Promise<void> {
-    const cookieStore = await cookies();
-    cookieStore.delete("order-confirmation");
-}
