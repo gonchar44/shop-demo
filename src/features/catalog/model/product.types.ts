@@ -2,6 +2,16 @@ export type ProductListParams = {
     page: number;
     limit: number;
     q?: string;
+    category?: string[];
+    room?: string[];
+    style?: string[];
+    material?: string[];
+    color?: string[];
+    minPriceCents?: number;
+    maxPriceCents?: number;
+    inStock?: boolean;
+    isNew?: boolean;
+    onSale?: boolean;
 };
 
 export type ProductAttribute = {
@@ -12,6 +22,18 @@ export type ProductAttribute = {
 
 export type ProductColor = ProductAttribute & {
     hex: string | null;
+};
+
+export type ProductFilterOptions = {
+    categories: ProductAttribute[];
+    rooms: ProductAttribute[];
+    styles: ProductAttribute[];
+    materials: ProductAttribute[];
+    colors: ProductColor[];
+    priceBounds: {
+        minCents: number;
+        maxCents: number;
+    };
 };
 
 export type ProductListItem = {

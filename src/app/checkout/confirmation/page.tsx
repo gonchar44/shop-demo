@@ -18,6 +18,7 @@ export default async function ConfirmationPage({ searchParams }: ConfirmationPag
     const raw = cookieStore.get("order-confirmation")?.value;
 
     let email: string | undefined;
+    // Safely parse the order-confirmation cookie and use its email only if it matches this orderRef.
     if (raw) {
         try {
             const parsed: unknown = JSON.parse(raw);
