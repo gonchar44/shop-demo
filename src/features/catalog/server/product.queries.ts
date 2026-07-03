@@ -101,10 +101,6 @@ function findProductsForList(skip: number, take: number, where: ReturnType<typeo
 
 type ProductForList = Awaited<ReturnType<typeof findProductsForList>>[number];
 
-function isActuallyOnSale(product: ProductForList): boolean {
-    return product.compareAtCents !== null && product.compareAtCents > product.priceCents;
-}
-
 function mapProductForList(product: ProductForList): ProductListItem {
     return {
         id: product.id,
@@ -130,40 +126,17 @@ function mapProductForList(product: ProductForList): ProductListItem {
 }
 
 export async function getProductList(params: ProductListParams): Promise<ProductListResponse> {
-    const { page, limit, onSale } = params;
+    const { page, limit } = params;
     const skip = (page - 1) * limit;
     const where = buildProductWhere(params);
 
-    if (!onSale) {
-        const [products, total] = await Promise.all([
-            findProductsForList(skip, limit, where),
-            prisma.product.count({ where }),
-        ]);
-
-        return {
-            data: products.map(mapProductForList),
-            pagination: {
-                page,
-                limit,
-                total,
-                totalPages: Math.ceil(total / limit),
-                hasNext: page * limit < total,
-                hasPrev: page > 1,
-            },
-        };
-    }
-
-    const allProducts = await prisma.product.findMany({
-        where,
-        select: productListSelect,
-    });
-
-    const filteredProducts = allProducts.filter(isActuallyOnSale);
-    const total = filteredProducts.length;
-    const paginatedProducts = filteredProducts.slice(skip, skip + limit);
+    const [products, total] = await Promise.all([
+        findProductsForList(skip, limit, where),
+        prisma.product.count({ where }),
+    ]);
 
     return {
-        data: paginatedProducts.map(mapProductForList),
+        data: products.map(mapProductForList),
         pagination: {
             page,
             limit,
