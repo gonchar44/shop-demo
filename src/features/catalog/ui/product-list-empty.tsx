@@ -28,7 +28,7 @@ const VARIANT_CONFIG: Record<Variant, VariantConfig> = {
     "no-results": {
         Icon: SearchXIcon,
         heading: "No products found",
-        subtext: "Try different keywords or clear the search.",
+        subtext: "Try different keywords or adjust your filters.",
     },
     "empty-catalog": {
         Icon: PackageIcon,
@@ -50,7 +50,7 @@ export function ProductListEmpty({ variant, onRetry, onClearSearch }: ProductLis
         if (variant === "no-results" && onClearSearch)
             return (
                 <Button type="button" onClick={onClearSearch}>
-                    Clear search
+                    Clear filters
                 </Button>
             );
     }

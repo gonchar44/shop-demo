@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { apiGet } from "@/shared/lib/api";
+import { appendFilterParams } from "@/features/catalog/lib/filter-params";
 import type {
     ProductListParams,
     ProductListResponse,
@@ -28,6 +29,7 @@ function getProducts(params: ProductListParams) {
     if (params.q) {
         searchParams.set("q", params.q);
     }
+    appendFilterParams(searchParams, params);
 
     return apiGet<ProductListResponse>(`/api/products?${searchParams.toString()}`);
 }
