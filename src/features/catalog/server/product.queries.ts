@@ -46,8 +46,7 @@ type ProductWhereParams = Pick<
 >;
 
 function buildProductWhere(params: ProductWhereParams) {
-    const { q, category, room, style, material, color, minPriceCents, maxPriceCents, inStock, isNew, onSale } =
-        params;
+    const { q, category, room, style, material, color, minPriceCents, maxPriceCents, inStock, isNew, onSale } = params;
 
     const searchFilter = q
         ? {
