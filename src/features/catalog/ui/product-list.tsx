@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { showToast } from "@/shared/lib/toast";
 import { productListQueryOptions } from "@/features/catalog/api/product-queries";
+import { hasActiveCatalogFilters } from "@/features/catalog/lib/filter-params";
 import type { ProductListParams } from "@/features/catalog/model/product.types";
 import { ProductCard } from "./product-card";
 import { ProductPagination } from "./product-pagination";
@@ -25,11 +26,16 @@ export function ProductList({ params }: { params: ProductListParams }) {
         router.push(pathname);
     }
 
+    const hasActiveFilters = hasActiveCatalogFilters(params);
+
     if (isPending) return <div className="py-10 text-center text-sm text-gray-500">Loading...</div>;
     if (isError || !products) return <ProductListEmpty variant="error" onRetry={refetch} />;
     if (products.data.length === 0)
         return (
-            <ProductListEmpty variant={params.q ? "no-results" : "empty-catalog"} onClearSearch={handleClearSearch} />
+            <ProductListEmpty
+                variant={hasActiveFilters ? "no-results" : "empty-catalog"}
+                onClearSearch={handleClearSearch}
+            />
         );
 
     return (

@@ -31,11 +31,7 @@ export async function GET(request: NextRequest) {
         }
     }
 
-    const parsed = productListSearchParamsSchema.safeParse({
-        page: request.nextUrl.searchParams.get("page") ?? undefined,
-        limit: request.nextUrl.searchParams.get("limit") ?? undefined,
-        q: request.nextUrl.searchParams.get("q") ?? undefined,
-    });
+    const parsed = productListSearchParamsSchema.safeParse(Object.fromEntries(request.nextUrl.searchParams));
 
     if (!parsed.success) {
         return Response.json({ error: z.flattenError(parsed.error).fieldErrors }, { status: 400 });

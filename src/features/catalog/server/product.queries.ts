@@ -1,5 +1,6 @@
 import { prisma } from "@/shared/db/prisma";
 import type {
+    ProductFilterOptions,
     ProductListItem,
     ProductListParams,
     ProductListResponse,
@@ -29,7 +30,24 @@ const productListSelect = {
     materials: { select: { id: true, slug: true, name: true } },
 } as const;
 
-function buildProductWhere(q?: string) {
+type ProductWhereParams = Pick<
+    ProductListParams,
+    | "q"
+    | "category"
+    | "room"
+    | "style"
+    | "material"
+    | "color"
+    | "minPriceCents"
+    | "maxPriceCents"
+    | "inStock"
+    | "isNew"
+    | "onSale"
+>;
+
+function buildProductWhere(params: ProductWhereParams) {
+    const { q, category, room, style, material, color, minPriceCents, maxPriceCents, inStock, isNew, onSale } = params;
+
     const searchFilter = q
         ? {
               OR: [
@@ -43,7 +61,30 @@ function buildProductWhere(q?: string) {
               ],
           }
         : {};
-    return { isPublished: true, ...searchFilter };
+
+    const priceFilter =
+        minPriceCents !== undefined || maxPriceCents !== undefined
+            ? {
+                  priceCents: {
+                      ...(minPriceCents !== undefined && { gte: minPriceCents }),
+                      ...(maxPriceCents !== undefined && { lte: maxPriceCents }),
+                  },
+              }
+            : {};
+
+    return {
+        isPublished: true,
+        ...searchFilter,
+        ...priceFilter,
+        ...(category?.length && { category: { is: { slug: { in: category } } } }),
+        ...(room?.length && { room: { is: { slug: { in: room } } } }),
+        ...(style?.length && { style: { is: { slug: { in: style } } } }),
+        ...(material?.length && { materials: { some: { slug: { in: material } } } }),
+        ...(color?.length && { colors: { some: { slug: { in: color } } } }),
+        ...(inStock && { stock: { gt: 0 } }),
+        ...(isNew && { isNew: true }),
+        ...(onSale && { compareAtCents: { not: null, gt: prisma.product.fields.priceCents } }),
+    };
 }
 
 function findProductsForList(skip: number, take: number, where: ReturnType<typeof buildProductWhere>) {
@@ -83,9 +124,9 @@ function mapProductForList(product: ProductForList): ProductListItem {
 }
 
 export async function getProductList(params: ProductListParams): Promise<ProductListResponse> {
-    const { page, limit, q } = params;
+    const { page, limit } = params;
     const skip = (page - 1) * limit;
-    const where = buildProductWhere(q);
+    const where = buildProductWhere(params);
 
     const [products, total] = await Promise.all([
         findProductsForList(skip, limit, where),
@@ -115,7 +156,7 @@ export async function getProductsByIds(ids: string[]): Promise<ProductListItem[]
 }
 
 export async function getProductSuggestions(q: string): Promise<SuggestionsResponse> {
-    const where = buildProductWhere(q);
+    const where = buildProductWhere({ q });
 
     const [products, categories] = await Promise.all([
         prisma.product.findMany({
@@ -144,5 +185,39 @@ export async function getProductSuggestions(q: string): Promise<SuggestionsRespo
     return {
         products: products as ProductSuggestion[],
         categories,
+    };
+}
+
+export async function getProductFilterOptions(): Promise<ProductFilterOptions> {
+    const attributeSelect = { id: true, slug: true, name: true } as const;
+    const publishedProductFilter = { products: { some: { isPublished: true } } };
+
+    const [categories, rooms, styles, materials, colors, priceAggregate] = await Promise.all([
+        prisma.category.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
+        prisma.room.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
+        prisma.style.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
+        prisma.material.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
+        prisma.color.findMany({
+            where: publishedProductFilter,
+            select: { ...attributeSelect, hex: true },
+            orderBy: { name: "asc" },
+        }),
+        prisma.product.aggregate({
+            where: { isPublished: true },
+            _min: { priceCents: true },
+            _max: { priceCents: true },
+        }),
+    ]);
+
+    return {
+        categories,
+        rooms,
+        styles,
+        materials,
+        colors,
+        priceBounds: {
+            minCents: priceAggregate._min.priceCents ?? 0,
+            maxCents: priceAggregate._max.priceCents ?? 0,
+        },
     };
 }
