@@ -160,7 +160,8 @@ const products = [
         dimensions: "50 x 70 in",
         weight: "2.1 lb",
         images: ["https://placehold.co/800x800?text=Linen+Throw+Blanket"],
-        thumbnail: "",
+        thumbnail:
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-4/linen-throw-blanket-cream-linen-transparent.png",
         stock: 40,
         isNew: true,
         rating: 4.7,
@@ -182,7 +183,8 @@ const products = [
         dimensions: "3 x 3 x 5 in",
         weight: "0.8 lb",
         images: ["https://placehold.co/800x800?text=Brass+Candle+Holder"],
-        thumbnail: "",
+        thumbnail:
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-5/brass-candle-holder-black-steel-transparent.png",
         stock: 80,
         isFeatured: true,
         rating: 4.5,
@@ -204,7 +206,8 @@ const products = [
         dimensions: "11 x 5 x 3 in",
         weight: "1.7 lb",
         images: ["https://placehold.co/800x800?text=Oak+Desk+Organizer"],
-        thumbnail: "",
+        thumbnail:
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-6/oak-desk-organizer-oak-transparent.png",
         stock: 36,
         rating: 4.8,
         reviewCount: 24,

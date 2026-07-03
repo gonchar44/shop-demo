@@ -43,7 +43,7 @@ export default async function CatalogPage({
                     fallback={
                         <div className="flex items-center gap-3">
                             <Skeleton className="w-96 h-12 rounded-2xl" />
-                            <Skeleton className="w-28 h-11 rounded-2xl" />
+                            <Skeleton className="w-10 h-10 rounded-lg" />
                         </div>
                     }
                 >
