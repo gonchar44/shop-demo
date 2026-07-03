@@ -12,6 +12,7 @@ export type ProductListParams = {
     inStock?: boolean;
     isNew?: boolean;
     onSale?: boolean;
+    featured?: boolean;
 };
 
 export type ProductAttribute = {

@@ -113,6 +113,7 @@ export function ProductFiltersPanel({ options, onClose }: ProductFiltersPanelPro
                     inStock={draft.inStock}
                     isNew={draft.isNew}
                     onSale={draft.onSale}
+                    featured={draft.featured}
                     onChange={(next) => patchDraft(next)}
                 />
             </div>

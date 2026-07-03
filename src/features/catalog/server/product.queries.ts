@@ -43,10 +43,12 @@ type ProductWhereParams = Pick<
     | "inStock"
     | "isNew"
     | "onSale"
+    | "featured"
 >;
 
 function buildProductWhere(params: ProductWhereParams) {
-    const { q, category, room, style, material, color, minPriceCents, maxPriceCents, inStock, isNew } = params;
+    const { q, category, room, style, material, color, minPriceCents, maxPriceCents, inStock, isNew, featured } =
+        params;
 
     const searchFilter = q
         ? {
@@ -83,6 +85,7 @@ function buildProductWhere(params: ProductWhereParams) {
         ...(color?.length && { colors: { some: { slug: { in: color } } } }),
         ...(inStock && { stock: { gt: 0 } }),
         ...(isNew && { isNew: true }),
+        ...(featured && { isFeatured: true }),
     };
 }
 
@@ -177,6 +180,16 @@ export async function getProductsByIds(ids: string[]): Promise<ProductListItem[]
     const products = await prisma.product.findMany({
         where: { isPublished: true, id: { in: ids } },
         select: productListSelect,
+    });
+    return products.map(mapProductForList);
+}
+
+export async function getFeaturedProducts(limit: number): Promise<ProductListItem[]> {
+    const products = await prisma.product.findMany({
+        where: { isPublished: true, isFeatured: true },
+        select: productListSelect,
+        orderBy: { createdAt: "asc" },
+        take: limit,
     });
     return products.map(mapProductForList);
 }
