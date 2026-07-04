@@ -3,6 +3,8 @@
 `shop-demo` is a small e-commerce demo built with Next.js. It currently includes
 a product catalog backed by PostgreSQL through Prisma.
 
+**[→ Live Site](https://shop-demo-xi.vercel.app/)**
+
 ## Tech Stack
 
 - Next.js 16 with App Router
