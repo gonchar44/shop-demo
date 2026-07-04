@@ -37,10 +37,12 @@ export default async function CatalogPage({
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <main className="flex-1 bg-white gap-y-6 flex flex-col py-6">
-                <h1 className="text-2xl font-bold text-gray-950">Products</h1>
-                <Suspense fallback={<Skeleton className="w-10 h-10 rounded-lg" />}>
-                    <ProductFilters options={filterOptions} />
-                </Suspense>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold text-gray-950">Products</h1>
+                    <Suspense fallback={<Skeleton className="h-11 w-24 rounded-2xl" />}>
+                        <ProductFilters options={filterOptions} />
+                    </Suspense>
+                </div>
                 <ProductList params={params} />
             </main>
         </HydrationBoundary>
