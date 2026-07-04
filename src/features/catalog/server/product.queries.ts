@@ -167,6 +167,24 @@ export async function getFeaturedProducts(limit: number): Promise<ProductListIte
     return products.map(mapProductForList);
 }
 
+export async function getHeroProduct(): Promise<ProductListItem | null> {
+    const featured = await prisma.product.findMany({
+        where: { isPublished: true, isFeatured: true },
+        select: productListSelect,
+        orderBy: { createdAt: "asc" },
+        take: 1,
+    });
+    if (featured.length > 0) return mapProductForList(featured[0]);
+
+    const fallback = await prisma.product.findMany({
+        where: { isPublished: true },
+        select: productListSelect,
+        orderBy: { createdAt: "desc" },
+        take: 1,
+    });
+    return fallback.length > 0 ? mapProductForList(fallback[0]) : null;
+}
+
 export async function getProductSuggestions(q: string): Promise<SuggestionsResponse> {
     const where = buildProductWhere({ q });
 
