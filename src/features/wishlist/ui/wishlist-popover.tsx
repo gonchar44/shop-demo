@@ -43,10 +43,10 @@ export function WishlistPopover() {
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             style={{ transformOrigin: "top right" }}
-            className="w-100 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden"
+            className="w-[min(25rem,var(--radix-popover-content-available-width))] max-h-[var(--radix-popover-content-available-height)] bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden flex flex-col"
         >
             {/* Header */}
-            <div className="flex justify-between items-center px-5 pt-4.5 pb-3.5 border-b border-gray-200">
+            <div className="shrink-0 flex justify-between items-center px-5 pt-4.5 pb-3.5 border-b border-gray-200">
                 <div>
                     <p className="font-mono text-xs tracking-widest uppercase text-gray-400">Wishlist</p>
                     <AnimatePresence initial={false}>
@@ -93,7 +93,7 @@ export function WishlistPopover() {
 
             {/* List */}
             {(isLoading || isFetching || displayedProducts.length > 0) && (
-                <ul className="max-h-90 overflow-y-auto py-1.5 px-1">
+                <ul className="flex-1 min-h-0 overflow-y-auto py-1.5 px-1">
                     {isLoading || (isFetching && displayedProducts.length === 0)
                         ? Array.from({ length: Math.max(ids.length, 1) }).map((_, index) => (
                               <WishlistPopoverItemSkeleton key={index} />
