@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
-import { ImageIcon } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 import { formatPrice } from "@/features/catalog/lib/price";
 import type { ProductSuggestion } from "@/features/catalog/model/product.types";
 
@@ -24,17 +23,14 @@ export function ProductSuggestionItem({ product, isFocused, onSelect }: ProductS
             onClick={() => onSelect(product.slug)}
         >
             <div className="size-14 shrink-0 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden">
-                {product.thumbnail ? (
-                    <Image
-                        src="/products/lamp.png"
-                        alt={product.name}
-                        width={40}
-                        height={40}
-                        className="object-contain w-10 h-10"
-                    />
-                ) : (
-                    <ImageIcon className="size-5 text-gray-300" />
-                )}
+                <ImageWithFallback
+                    src={product.thumbnail}
+                    alt={product.name}
+                    width={40}
+                    height={40}
+                    className="object-contain w-10 h-10"
+                    iconClassName="size-5"
+                />
             </div>
             <div className="flex-1 min-w-0">
                 <p className="text-xs text-gray-400 uppercase tracking-widest leading-none mb-0.5">
