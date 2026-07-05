@@ -14,6 +14,7 @@ import { cn } from "@/shared/lib/utils";
 
 type ProductCardProps = {
     product: ProductListItem;
+    loading?: "eager" | "lazy";
 };
 
 type ProductBadge = { label: string; variant: "sale" | "new" | "featured" };
@@ -34,7 +35,7 @@ const BADGE_STYLES: Record<ProductBadge["variant"], string> = {
     featured: "bg-blue-400/80 backdrop-blur-sm text-white",
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, loading }: ProductCardProps) {
     const { name, thumbnail, priceCents, compareAtCents, currency, category } = product;
     const badge = resolveBadge(product);
     const isInWishlist = useWishlistStore((s) => s.items.some((i) => i.id === product.id));
@@ -64,7 +65,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 )}
             >
                 <ImageWithFallback
-                    loading="eager"
+                    loading={loading}
                     src={thumbnail}
                     alt={name}
                     width={400}
