@@ -25,7 +25,6 @@ export function HeaderSearch() {
                 type="button"
                 variant="secondary"
                 size="md"
-                shape="circle"
                 aria-label="Open search"
                 className="md:hidden"
                 onClick={() => setIsMobileOpen(true)}
