@@ -71,6 +71,12 @@ export type ProductListResponse = {
     };
 };
 
+export type RoomWithProductCount = {
+    slug: string;
+    name: string;
+    productCount: number;
+};
+
 export type ProductSuggestion = {
     id: string;
     slug: string;

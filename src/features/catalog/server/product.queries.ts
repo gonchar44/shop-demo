@@ -5,6 +5,7 @@ import type {
     ProductListParams,
     ProductListResponse,
     ProductSuggestion,
+    RoomWithProductCount,
     SuggestionsResponse,
 } from "@/features/catalog/model/product.types";
 
@@ -196,6 +197,14 @@ export async function getHeroProduct(): Promise<ProductListItem | null> {
         take: 1,
     });
     return fallback.length > 0 ? mapProductForList(fallback[0]) : null;
+}
+
+export async function getRoomsWithProductCount(slugs: string[]): Promise<RoomWithProductCount[]> {
+    const rooms = await prisma.room.findMany({
+        where: { slug: { in: slugs } },
+        select: { slug: true, name: true, _count: { select: { products: { where: { isPublished: true } } } } },
+    });
+    return rooms.map((room) => ({ slug: room.slug, name: room.name, productCount: room._count.products }));
 }
 
 export async function getProductSuggestions(q: string): Promise<SuggestionsResponse> {
