@@ -66,7 +66,7 @@ npm run db:migrate:dev
 Seed the database:
 
 ```bash
-npm run db:seed
+npm run db:seed:dev
 ```
 
 Start the Next.js development server:
@@ -136,19 +136,27 @@ Stop the Docker database container.
 npm run db:migrate:dev
 ```
 
-Run Prisma migrations in development.
+Create and apply Prisma migrations locally using `.env.local`.
 
 ```bash
 npm run db:migrate
 ```
 
-Apply existing Prisma migrations without creating a new migration.
+Apply existing Prisma migrations using `DATABASE_URL` from the current
+environment. This command is intended for CI and deployment environments.
 
 ```bash
 npm run db:seed
 ```
 
-Seed the database with demo catalog data.
+Seed the database using `DATABASE_URL` from the current environment. This
+command is intended for CI and explicitly managed deployment tasks.
+
+```bash
+npm run db:seed:dev
+```
+
+Seed the local database with demo catalog data using `.env.local`.
 
 ```bash
 npm run db:studio
@@ -177,8 +185,14 @@ If port `5433` is already in use, stop the process using it or update both
 If catalog pages are empty after setup, rerun the seed:
 
 ```bash
-npm run db:seed
+npm run db:seed:dev
 ```
+
+## Pull Request Checks
+
+The GitHub Actions workflow starts an isolated PostgreSQL service for each pull
+request check. Before building the app, it applies the committed Prisma
+migrations and seeds the temporary database with demo data.
 
 ## Reviewer Checklist
 
@@ -189,6 +203,6 @@ npm install
 cp .env.example .env.local
 npm run db:start
 npm run db:migrate:dev
-npm run db:seed
+npm run db:seed:dev
 npm run dev
 ```
