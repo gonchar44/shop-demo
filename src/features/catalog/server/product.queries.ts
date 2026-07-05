@@ -47,8 +47,20 @@ type ProductWhereParams = Pick<
 >;
 
 function buildProductWhere(params: ProductWhereParams) {
-    const { q, category, room, style, material, color, minPriceCents, maxPriceCents, inStock, isNew, featured } =
-        params;
+    const {
+        q,
+        category,
+        room,
+        style,
+        material,
+        color,
+        minPriceCents,
+        maxPriceCents,
+        inStock,
+        isNew,
+        onSale,
+        featured,
+    } = params;
 
     const searchFilter = q
         ? {
@@ -85,6 +97,7 @@ function buildProductWhere(params: ProductWhereParams) {
         ...(color?.length && { colors: { some: { slug: { in: color } } } }),
         ...(inStock && { stock: { gt: 0 } }),
         ...(isNew && { isNew: true }),
+        ...(onSale && { compareAtCents: { not: null } }),
         ...(featured && { isFeatured: true }),
     };
 }

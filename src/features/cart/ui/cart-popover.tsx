@@ -51,7 +51,7 @@ export function CartPopover() {
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             style={{ transformOrigin: "top right" }}
-            className="w-[min(25rem,var(--radix-popover-content-available-width))] max-h-[var(--radix-popover-content-available-height)] bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden flex flex-col"
+            className="w-[min(25rem,var(--radix-popover-content-available-width))] max-h-(--radix-popover-content-available-height) bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden flex flex-col"
         >
             {/* Header */}
             <div className="shrink-0 flex justify-between items-center px-5 pt-4.5 pb-3.5 border-b border-gray-200">
