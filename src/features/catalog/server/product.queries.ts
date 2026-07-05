@@ -97,7 +97,7 @@ function buildProductWhere(params: ProductWhereParams) {
         ...(color?.length && { colors: { some: { slug: { in: color } } } }),
         ...(inStock && { stock: { gt: 0 } }),
         ...(isNew && { isNew: true }),
-        ...(onSale && { compareAtCents: { not: null } }),
+        ...(onSale && { compareAtCents: { not: null, gt: prisma.product.fields.priceCents } }),
         ...(featured && { isFeatured: true }),
     };
 }
