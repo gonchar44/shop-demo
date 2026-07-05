@@ -11,9 +11,9 @@
         "format:fix": "prettier --write '**/*.{js,ts,tsx,json,css,scss,md}'",
         "db:start": "docker compose up -d",
         "db:stop": "docker compose down",
-        "db:migrate": "dotenv -e .env -- prisma migrate deploy",
+        "db:migrate": "prisma migrate deploy",
         "db:migrate:dev": "dotenv -e .env.local -- prisma migrate dev",
-        "db:seed": "dotenv -e .env -- prisma db seed",
+        "db:seed": "prisma db seed",
         "db:seed:dev": "dotenv -e .env.local -- prisma db seed",
         "db:studio": "dotenv -e .env.local -- prisma studio",
         "db:reset": "dotenv -e .env.local -- prisma migrate reset"
