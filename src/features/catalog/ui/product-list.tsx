@@ -40,7 +40,13 @@ export function ProductList({ params }: { params: ProductListParams }) {
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-10 py-5">
+            {hasActiveFilters && (
+                <p className="text-sm text-gray-500">
+                    {products.pagination.total.toLocaleString()}{" "}
+                    {products.pagination.total === 1 ? "product" : "products"} found
+                </p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-10 py-5">
                 {products.data.map((product) => (
                     <ProductCard product={product} key={product.id} />
                 ))}

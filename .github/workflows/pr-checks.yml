@@ -8,6 +8,21 @@ jobs:
     checks:
         runs-on: ubuntu-latest
 
+        services:
+            postgres:
+                image: postgres:16-alpine
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: shop_demo
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
         env:
             DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shop_demo
 
@@ -30,6 +45,12 @@ jobs:
 
             - name: Generate Prisma client
               run: npx prisma generate
+
+            - name: Apply database migrations
+              run: npm run db:migrate
+
+            - name: Seed database
+              run: npm run db:seed
 
             - name: Type check
               run: |

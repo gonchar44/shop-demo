@@ -43,10 +43,24 @@ type ProductWhereParams = Pick<
     | "inStock"
     | "isNew"
     | "onSale"
+    | "featured"
 >;
 
 function buildProductWhere(params: ProductWhereParams) {
-    const { q, category, room, style, material, color, minPriceCents, maxPriceCents, inStock, isNew, onSale } = params;
+    const {
+        q,
+        category,
+        room,
+        style,
+        material,
+        color,
+        minPriceCents,
+        maxPriceCents,
+        inStock,
+        isNew,
+        onSale,
+        featured,
+    } = params;
 
     const searchFilter = q
         ? {
@@ -84,6 +98,7 @@ function buildProductWhere(params: ProductWhereParams) {
         ...(inStock && { stock: { gt: 0 } }),
         ...(isNew && { isNew: true }),
         ...(onSale && { compareAtCents: { not: null, gt: prisma.product.fields.priceCents } }),
+        ...(featured && { isFeatured: true }),
     };
 }
 
@@ -153,6 +168,34 @@ export async function getProductsByIds(ids: string[]): Promise<ProductListItem[]
         select: productListSelect,
     });
     return products.map(mapProductForList);
+}
+
+export async function getFeaturedProducts(limit: number): Promise<ProductListItem[]> {
+    const products = await prisma.product.findMany({
+        where: { isPublished: true, isFeatured: true },
+        select: productListSelect,
+        orderBy: { createdAt: "asc" },
+        take: limit,
+    });
+    return products.map(mapProductForList);
+}
+
+export async function getHeroProduct(): Promise<ProductListItem | null> {
+    const featured = await prisma.product.findMany({
+        where: { isPublished: true, isFeatured: true },
+        select: productListSelect,
+        orderBy: { createdAt: "asc" },
+        take: 1,
+    });
+    if (featured.length > 0) return mapProductForList(featured[0]);
+
+    const fallback = await prisma.product.findMany({
+        where: { isPublished: true },
+        select: productListSelect,
+        orderBy: { createdAt: "desc" },
+        take: 1,
+    });
+    return fallback.length > 0 ? mapProductForList(fallback[0]) : null;
 }
 
 export async function getProductSuggestions(q: string): Promise<SuggestionsResponse> {

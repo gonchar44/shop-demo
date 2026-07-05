@@ -1,5 +1,7 @@
 "use client";
 
+import { XIcon } from "lucide-react";
+import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 
 type ProductFiltersPriceRangeProps = {
@@ -51,6 +53,16 @@ export function ProductFiltersPriceRange({
                     onChange={(e) => onChange(minPriceCents, toCentsOrUndefined(e.target.value))}
                     aria-label="Maximum price"
                 />
+                <Button
+                    className="shrink-0"
+                    variant="secondary"
+                    size="icon-sm"
+                    disabled={minPriceCents === undefined && maxPriceCents === undefined}
+                    onClick={() => onChange(undefined, undefined)}
+                    aria-label="Reset price filter"
+                >
+                    <XIcon className="size-4" aria-hidden={true} />
+                </Button>
             </div>
         </div>
     );

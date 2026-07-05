@@ -40,6 +40,7 @@ export const productListSearchParamsSchema = z.object({
     inStock: booleanFlagSchema,
     isNew: booleanFlagSchema,
     onSale: booleanFlagSchema,
+    featured: booleanFlagSchema,
 });
 
 export const suggestionsSearchParamsSchema = z.object({

@@ -1,7 +1,7 @@
 import type { ProductFilterOptions, ProductListParams } from "@/features/catalog/model/product.types";
 
 export const ARRAY_FILTER_KEYS = ["category", "room", "style", "material", "color"] as const;
-export const BOOLEAN_FILTER_KEYS = ["inStock", "isNew", "onSale"] as const;
+export const BOOLEAN_FILTER_KEYS = ["inStock", "isNew", "onSale", "featured"] as const;
 
 export type ArrayFilterKey = (typeof ARRAY_FILTER_KEYS)[number];
 export type BooleanFilterKey = (typeof BOOLEAN_FILTER_KEYS)[number];
@@ -17,6 +17,7 @@ export type CatalogFilterDraft = {
     inStock: boolean;
     isNew: boolean;
     onSale: boolean;
+    featured: boolean;
 };
 
 const emptyArrayFields = Object.fromEntries(

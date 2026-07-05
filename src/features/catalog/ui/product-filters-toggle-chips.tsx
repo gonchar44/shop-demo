@@ -1,6 +1,6 @@
 "use client";
 
-import { PackageCheckIcon, SparklesIcon, TagIcon } from "lucide-react";
+import { PackageCheckIcon, SparklesIcon, StarIcon, TagIcon } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import type { BooleanFilterKey } from "@/features/catalog/lib/filter-params";
 
@@ -8,17 +8,25 @@ type ProductFiltersToggleChipsProps = {
     inStock: boolean;
     isNew: boolean;
     onSale: boolean;
-    onChange: (next: { inStock: boolean; isNew: boolean; onSale: boolean }) => void;
+    featured: boolean;
+    onChange: (next: { inStock: boolean; isNew: boolean; onSale: boolean; featured: boolean }) => void;
 };
 
 const CHIPS: { key: BooleanFilterKey; label: string; icon: typeof PackageCheckIcon }[] = [
     { key: "inStock", label: "In stock", icon: PackageCheckIcon },
     { key: "isNew", label: "New", icon: SparklesIcon },
     { key: "onSale", label: "Deals", icon: TagIcon },
+    { key: "featured", label: "Featured", icon: StarIcon },
 ];
 
-export function ProductFiltersToggleChips({ inStock, isNew, onSale, onChange }: ProductFiltersToggleChipsProps) {
-    const state: Record<BooleanFilterKey, boolean> = { inStock, isNew, onSale };
+export function ProductFiltersToggleChips({
+    inStock,
+    isNew,
+    onSale,
+    featured,
+    onChange,
+}: ProductFiltersToggleChipsProps) {
+    const state: Record<BooleanFilterKey, boolean> = { inStock, isNew, onSale, featured };
 
     return (
         <div className="px-5 py-4">

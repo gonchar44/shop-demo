@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
-import { BookmarkIcon, ImageIcon } from "lucide-react";
+import { BookmarkIcon } from "lucide-react";
 import { showToast } from "@/shared/lib/toast";
+import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
@@ -14,6 +14,7 @@ import { cn } from "@/shared/lib/utils";
 
 type ProductCardProps = {
     product: ProductListItem;
+    loading?: "eager" | "lazy";
 };
 
 type ProductBadge = { label: string; variant: "sale" | "new" | "featured" };
@@ -34,7 +35,7 @@ const BADGE_STYLES: Record<ProductBadge["variant"], string> = {
     featured: "bg-blue-400/80 backdrop-blur-sm text-white",
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, loading }: ProductCardProps) {
     const { name, thumbnail, priceCents, compareAtCents, currency, category } = product;
     const badge = resolveBadge(product);
     const isInWishlist = useWishlistStore((s) => s.items.some((i) => i.id === product.id));
@@ -57,21 +58,23 @@ export function ProductCard({ product }: ProductCardProps) {
     return (
         <article className="group aspect-[3/4] relative w-full select-none" aria-label={name}>
             {/* Image area */}
-            <div className="absolute inset-x-0 top-0 bottom-[120px] z-20 flex items-center justify-center p-4">
-                {/* TODO: set a real image src */}
-                {thumbnail ? (
-                    <Image
-                        loading="eager"
-                        src="/products/lamp.png"
-                        alt={name}
-                        width={400}
-                        height={400}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 25vw, 20vw"
-                        className="rounded-2xl max-w-full max-h-full object-contain"
-                    />
-                ) : (
-                    <ImageIcon className="size-10 text-muted-foreground" />
+            <div
+                className={cn(
+                    "absolute inset-x-0 top-0 bottom-[120px] z-20 flex items-center justify-center p-4",
+                    !thumbnail && "bottom-14",
                 )}
+            >
+                <ImageWithFallback
+                    loading={loading}
+                    src={thumbnail}
+                    alt={name}
+                    width={400}
+                    height={400}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 25vw, 20vw"
+                    className="rounded-2xl max-w-full max-h-full object-contain"
+                    iconClassName="size-10"
+                    label="No image"
+                />
             </div>
 
             <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl">
