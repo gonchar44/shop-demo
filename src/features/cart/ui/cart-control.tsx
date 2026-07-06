@@ -32,6 +32,7 @@ export function CartControl() {
                 forceMount={true}
                 align="end"
                 sideOffset={10}
+                collisionPadding={24}
                 className="p-0 border-0 shadow-none w-auto bg-transparent"
             >
                 <AnimatePresence>{isOpen && <CartPopover />}</AnimatePresence>

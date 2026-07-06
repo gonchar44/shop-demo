@@ -26,12 +26,13 @@ export function ProductFilters({ options }: ProductFiltersProps) {
             <PopoverTrigger asChild={true}>
                 <Button
                     type="button"
-                    variant="secondary"
-                    size="icon-lg"
+                    variant="primary"
+                    size="md"
                     aria-label="Filters"
-                    className={cn("relative", isOpen && "bg-gray-100")}
+                    className={cn("relative gap-2", isOpen && "opacity-50")}
                 >
                     <Settings2Icon className="size-4" strokeWidth={2} />
+                    Filters
                     <CountBadge count={activeCount} />
                 </Button>
             </PopoverTrigger>
@@ -39,6 +40,7 @@ export function ProductFilters({ options }: ProductFiltersProps) {
                 forceMount={true}
                 align="end"
                 sideOffset={10}
+                collisionPadding={24}
                 className="p-0 border-0 shadow-none w-auto bg-transparent"
             >
                 <AnimatePresence>

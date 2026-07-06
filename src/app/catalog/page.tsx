@@ -7,7 +7,6 @@ import { getProductFilterOptions } from "@/features/catalog/server/product.queri
 import { DEFAULT_FILTER_OPTIONS } from "@/features/catalog/lib/filter-params";
 import { getQueryClient } from "@/shared/lib/query-client.server";
 import { ProductList } from "@/features/catalog/ui/product-list";
-import { ProductSearch } from "@/features/catalog/ui/product-search";
 import { ProductFilters } from "@/features/catalog/ui/product-filters";
 import { Skeleton } from "@/shared/ui/skeleton";
 
@@ -38,20 +37,12 @@ export default async function CatalogPage({
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <main className="flex-1 bg-white gap-y-6 flex flex-col py-6">
-                <h1 className="text-2xl font-bold text-gray-950">Products</h1>
-                <Suspense
-                    fallback={
-                        <div className="flex items-center gap-3">
-                            <Skeleton className="w-96 h-12 rounded-2xl" />
-                            <Skeleton className="w-28 h-11 rounded-2xl" />
-                        </div>
-                    }
-                >
-                    <div className="flex items-center gap-3">
-                        <ProductSearch />
+                <div className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold text-gray-950">Products</h1>
+                    <Suspense fallback={<Skeleton className="h-11 w-24 rounded-2xl" />}>
                         <ProductFilters options={filterOptions} />
-                    </div>
-                </Suspense>
+                    </Suspense>
+                </div>
                 <ProductList params={params} />
             </main>
         </HydrationBoundary>

@@ -31,6 +31,7 @@ export const productListSearchParamsSchema = z.object({
         .optional()
         .transform((v) => v || undefined),
     category: slugListSchema,
+    collection: slugListSchema,
     room: slugListSchema,
     style: slugListSchema,
     material: slugListSchema,
@@ -40,6 +41,7 @@ export const productListSearchParamsSchema = z.object({
     inStock: booleanFlagSchema,
     isNew: booleanFlagSchema,
     onSale: booleanFlagSchema,
+    featured: booleanFlagSchema,
 });
 
 export const suggestionsSearchParamsSchema = z.object({

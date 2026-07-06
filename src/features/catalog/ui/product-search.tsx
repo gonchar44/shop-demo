@@ -1,21 +1,28 @@
 "use client";
 
-import { useState, useRef, useEffect, startTransition } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useState, useRef, useEffect, useId, startTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRightIcon, SearchIcon, XIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { cn } from "@/shared/lib/utils";
 import { useClickOutside } from "@/shared/lib/use-click-outside";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
 import { suggestionsQueryOptions } from "@/features/catalog/api/product-queries";
 import { SearchSuggestions } from "@/features/catalog/ui/search-suggestions";
 
-const SUGGESTIONS_LISTBOX_ID = "search-suggestions-listbox";
+type ProductSearchProps = {
+    className?: string;
+    autoFocus?: boolean;
+};
 
-export function ProductSearch() {
+export function ProductSearch({ className = "w-96", autoFocus = false }: ProductSearchProps = {}) {
     const searchParams = useSearchParams();
-    const pathname = usePathname();
     const router = useRouter();
+
+    const reactId = useId();
+    const inputId = `product-search-${reactId}`;
+    const listboxId = `search-suggestions-listbox-${reactId}`;
 
     const [value, setValue] = useState(searchParams.get("q") ?? "");
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -63,7 +70,7 @@ export function ProductSearch() {
         next.set("page", "1");
         setIsOpen(false);
         setFocusedIndex(-1);
-        router.push(`${pathname}?${next.toString()}`);
+        router.push(`/catalog?${next.toString()}`);
     }
 
     function handleProductSelect(slug: string) {
@@ -78,7 +85,7 @@ export function ProductSearch() {
         const next = new URLSearchParams();
         next.set("category", slug);
         next.set("page", "1");
-        router.push(`${pathname}?${next.toString()}`);
+        router.push(`/catalog?${next.toString()}`);
     }
 
     function handleClear() {
@@ -132,8 +139,8 @@ export function ProductSearch() {
     }
 
     return (
-        <div ref={containerRef} className="w-96 relative" role="search" aria-label="Search products">
-            <label htmlFor="product-search" className="sr-only">
+        <div ref={containerRef} className={cn("relative", className)} role="search" aria-label="Search products">
+            <label htmlFor={inputId} className="sr-only">
                 Search products
             </label>
 
@@ -146,12 +153,13 @@ export function ProductSearch() {
 
                 <Input
                     ref={inputRef}
-                    id="product-search"
+                    id={inputId}
                     type="search"
                     autoComplete="off"
                     spellCheck={false}
                     value={value}
                     maxLength={80}
+                    autoFocus={autoFocus}
                     onChange={(e) => {
                         const v = e.target.value.slice(0, 80);
                         setValue(v);
@@ -166,7 +174,7 @@ export function ProductSearch() {
                     className="pl-11 pr-20 [&::-webkit-search-cancel-button]:hidden"
                     aria-autocomplete="list"
                     aria-expanded={showDropdown}
-                    aria-controls={SUGGESTIONS_LISTBOX_ID}
+                    aria-controls={listboxId}
                 />
 
                 {value && (
@@ -199,7 +207,7 @@ export function ProductSearch() {
             </div>
 
             <SearchSuggestions
-                id={SUGGESTIONS_LISTBOX_ID}
+                id={listboxId}
                 query={debouncedValue}
                 products={products}
                 categories={categories}

@@ -1,10 +1,10 @@
-import Image from "next/image";
 import { XIcon } from "lucide-react";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice } from "@/features/catalog/lib/price";
 import { CartQuantityControl } from "@/features/cart/ui/cart-quantity-control";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 
 type CartPopoverItemProps = {
     product: ProductListItem;
@@ -23,16 +23,14 @@ export function CartPopoverItem({ product, showTopBorder, onRemove }: CartPopove
         >
             {/* Thumbnail */}
             <div className="w-18 h-22 bg-gray-100 rounded-xl grid place-items-center">
-                {/* TODO: set a real image src */}
-                {product.thumbnail && (
-                    <Image
-                        src="/products/lamp.png"
-                        alt={product.name}
-                        width={54}
-                        height={66}
-                        className="object-contain"
-                    />
-                )}
+                <ImageWithFallback
+                    src={product.thumbnail}
+                    alt={product.name}
+                    width={54}
+                    height={66}
+                    className="object-contain"
+                    iconClassName="size-5"
+                />
             </div>
 
             {/* Meta */}
