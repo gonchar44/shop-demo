@@ -1,3 +1,4 @@
+import { BrandStatementSection } from "@/features/home/ui/sections/brand-statement-section";
 import { CollectionsSection } from "@/features/home/ui/sections/collections-section";
 import { FeaturedPicksSection } from "@/features/home/ui/sections/featured-picks-section";
 import { HeroSection } from "@/features/home/ui/sections/hero-section";
@@ -12,6 +13,7 @@ export function HomeSections() {
             <FeaturedPicksSection />
             <CollectionsSection />
             <NewArrivalsSection />
+            <BrandStatementSection />
         </main>
     );
 }
