@@ -1,3 +1,4 @@
+import { CollectionsSection } from "@/features/home/ui/sections/collections-section";
 import { FeaturedPicksSection } from "@/features/home/ui/sections/featured-picks-section";
 import { HeroSection } from "@/features/home/ui/sections/hero-section";
 import { RoomsSection } from "@/features/home/ui/sections/rooms-section";
@@ -8,6 +9,7 @@ export function HomeSections() {
             <HeroSection />
             <RoomsSection />
             <FeaturedPicksSection />
+            <CollectionsSection />
         </main>
     );
 }

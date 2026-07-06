@@ -80,6 +80,12 @@ export function ProductFiltersPanel({ options, onClose }: ProductFiltersPanelPro
                         onChange={(category) => patchDraft({ category })}
                     />
                     <ProductFiltersDropdownGroup
+                        label="Collection"
+                        options={options.collections}
+                        selected={draft.collection}
+                        onChange={(collection) => patchDraft({ collection })}
+                    />
+                    <ProductFiltersDropdownGroup
                         label="Room"
                         options={options.rooms}
                         selected={draft.room}

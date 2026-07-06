@@ -3,6 +3,7 @@ export type ProductListParams = {
     limit: number;
     q?: string;
     category?: string[];
+    collection?: string[];
     room?: string[];
     style?: string[];
     material?: string[];
@@ -27,6 +28,7 @@ export type ProductColor = ProductAttribute & {
 
 export type ProductFilterOptions = {
     categories: ProductAttribute[];
+    collections: ProductAttribute[];
     rooms: ProductAttribute[];
     styles: ProductAttribute[];
     materials: ProductAttribute[];
@@ -75,6 +77,11 @@ export type RoomWithProductCount = {
     slug: string;
     name: string;
     productCount: number;
+};
+
+export type CollectionSummary = {
+    slug: string;
+    name: string;
 };
 
 export type ProductSuggestion = {

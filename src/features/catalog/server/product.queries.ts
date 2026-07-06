@@ -1,5 +1,6 @@
 import { prisma } from "@/shared/db/prisma";
 import type {
+    CollectionSummary,
     ProductFilterOptions,
     ProductListItem,
     ProductListParams,
@@ -35,6 +36,7 @@ type ProductWhereParams = Pick<
     ProductListParams,
     | "q"
     | "category"
+    | "collection"
     | "room"
     | "style"
     | "material"
@@ -51,6 +53,7 @@ function buildProductWhere(params: ProductWhereParams) {
     const {
         q,
         category,
+        collection,
         room,
         style,
         material,
@@ -92,6 +95,7 @@ function buildProductWhere(params: ProductWhereParams) {
         ...searchFilter,
         ...priceFilter,
         ...(category?.length && { category: { is: { slug: { in: category } } } }),
+        ...(collection?.length && { collection: { is: { slug: { in: collection } } } }),
         ...(room?.length && { room: { is: { slug: { in: room } } } }),
         ...(style?.length && { style: { is: { slug: { in: style } } } }),
         ...(material?.length && { materials: { some: { slug: { in: material } } } }),
@@ -207,6 +211,13 @@ export async function getRoomsWithProductCount(slugs: string[]): Promise<RoomWit
     return rooms.map((room) => ({ slug: room.slug, name: room.name, productCount: room._count.products }));
 }
 
+export async function getCollectionsBySlugs(slugs: string[]): Promise<CollectionSummary[]> {
+    return prisma.collection.findMany({
+        where: { slug: { in: slugs } },
+        select: { slug: true, name: true },
+    });
+}
+
 export async function getProductSuggestions(q: string): Promise<SuggestionsResponse> {
     const where = buildProductWhere({ q });
 
@@ -244,8 +255,13 @@ export async function getProductFilterOptions(): Promise<ProductFilterOptions> {
     const attributeSelect = { id: true, slug: true, name: true } as const;
     const publishedProductFilter = { products: { some: { isPublished: true } } };
 
-    const [categories, rooms, styles, materials, colors, priceAggregate] = await Promise.all([
+    const [categories, collections, rooms, styles, materials, colors, priceAggregate] = await Promise.all([
         prisma.category.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
+        prisma.collection.findMany({
+            where: publishedProductFilter,
+            select: attributeSelect,
+            orderBy: { name: "asc" },
+        }),
         prisma.room.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
         prisma.style.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
         prisma.material.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
@@ -263,6 +279,7 @@ export async function getProductFilterOptions(): Promise<ProductFilterOptions> {
 
     return {
         categories,
+        collections,
         rooms,
         styles,
         materials,
