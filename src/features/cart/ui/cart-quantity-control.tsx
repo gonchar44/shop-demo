@@ -78,7 +78,9 @@ export function CartQuantityControl({ productId, stock, variant = "card", classN
                 "inline-flex h-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white text-gray-950",
                 "transition-[width] duration-200 ease-out motion-reduce:transition-none",
                 isPopoverVariant ? "w-24 border border-gray-200" : "w-9",
-                !isPopoverVariant && isInCart && "group-hover:w-24 group-focus-within:w-24",
+                !isPopoverVariant &&
+                    isInCart &&
+                    "pointer-coarse:w-24 pointer-fine:group-hover:w-24 pointer-fine:group-focus-within:w-24",
                 className,
             )}
         >
@@ -177,7 +179,7 @@ function StepButton({ onClick, label, disabled, isAlwaysVisible = false, childre
                 "hover:bg-gray-100 hover:text-gray-950",
                 isAlwaysVisible
                     ? "w-7 opacity-100"
-                    : "w-0 opacity-0 group-hover:w-7 group-hover:opacity-100 group-focus-within:w-7 group-focus-within:opacity-100",
+                    : "w-0 opacity-0 pointer-coarse:w-7 pointer-coarse:opacity-100 pointer-fine:group-hover:w-7 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-within:w-7 pointer-fine:group-focus-within:opacity-100",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gray-950",
                 "disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent",
                 "disabled:hover:text-gray-300 disabled:active:scale-100",

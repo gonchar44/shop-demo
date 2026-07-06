@@ -1,6 +1,6 @@
 import type { ProductFilterOptions, ProductListParams } from "@/features/catalog/model/product.types";
 
-export const ARRAY_FILTER_KEYS = ["category", "room", "style", "material", "color"] as const;
+export const ARRAY_FILTER_KEYS = ["category", "collection", "room", "style", "material", "color"] as const;
 export const BOOLEAN_FILTER_KEYS = ["inStock", "isNew", "onSale", "featured"] as const;
 
 export type ArrayFilterKey = (typeof ARRAY_FILTER_KEYS)[number];
@@ -8,6 +8,7 @@ export type BooleanFilterKey = (typeof BOOLEAN_FILTER_KEYS)[number];
 
 export type CatalogFilterDraft = {
     category: string[];
+    collection: string[];
     room: string[];
     style: string[];
     material: string[];
@@ -126,6 +127,7 @@ export function buildFilterSearchParams(current: URLSearchParams, draft: Catalog
 
 export const DEFAULT_FILTER_OPTIONS: ProductFilterOptions = {
     categories: [],
+    collections: [],
     rooms: [],
     styles: [],
     materials: [],

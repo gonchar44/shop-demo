@@ -1,7 +1,7 @@
-import Image from "next/image";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice } from "@/features/catalog/lib/price";
 import { cn } from "@/shared/lib/utils";
+import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 
 type CheckoutOrderSummaryItemProps = {
     product: ProductListItem;
@@ -16,16 +16,15 @@ export function CheckoutOrderSummaryItem({ product, quantity, showTopBorder }: C
 
     return (
         <li className={cn("flex items-center gap-3 py-3.5", showTopBorder && "border-t border-gray-200")}>
-            <div className="relative flex-shrink-0 w-14 h-16 bg-gray-100 rounded-xl grid place-items-center">
-                {product.thumbnail && (
-                    <Image
-                        src="/products/lamp.png"
-                        alt={product.name}
-                        width={40}
-                        height={52}
-                        className="object-contain"
-                    />
-                )}
+            <div className="relative shrink-0 w-14 h-16 bg-gray-100 rounded-xl grid place-items-center">
+                <ImageWithFallback
+                    src={product.thumbnail}
+                    alt={product.name}
+                    width={40}
+                    height={52}
+                    className="object-contain"
+                    iconClassName="size-5"
+                />
                 {quantity > 1 && (
                     <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-gray-950 text-white text-xs font-bold grid place-items-center tabular-nums">
                         {quantity}
@@ -51,7 +50,7 @@ export function CheckoutOrderSummaryItem({ product, quantity, showTopBorder }: C
                 )}
             </div>
 
-            <div className="flex flex-col items-end flex-shrink-0 tabular-nums">
+            <div className="flex flex-col items-end shrink-0 tabular-nums">
                 {hasDiscount && (
                     <span className="text-xs text-gray-400 line-through">
                         {formatPrice(compareAtLineTotalCents!, product.currency)}

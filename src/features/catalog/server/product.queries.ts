@@ -1,10 +1,12 @@
 import { prisma } from "@/shared/db/prisma";
 import type {
+    CollectionSummary,
     ProductFilterOptions,
     ProductListItem,
     ProductListParams,
     ProductListResponse,
     ProductSuggestion,
+    RoomWithProductCount,
     SuggestionsResponse,
 } from "@/features/catalog/model/product.types";
 
@@ -34,6 +36,7 @@ type ProductWhereParams = Pick<
     ProductListParams,
     | "q"
     | "category"
+    | "collection"
     | "room"
     | "style"
     | "material"
@@ -50,6 +53,7 @@ function buildProductWhere(params: ProductWhereParams) {
     const {
         q,
         category,
+        collection,
         room,
         style,
         material,
@@ -91,6 +95,7 @@ function buildProductWhere(params: ProductWhereParams) {
         ...searchFilter,
         ...priceFilter,
         ...(category?.length && { category: { is: { slug: { in: category } } } }),
+        ...(collection?.length && { collection: { is: { slug: { in: collection } } } }),
         ...(room?.length && { room: { is: { slug: { in: room } } } }),
         ...(style?.length && { style: { is: { slug: { in: style } } } }),
         ...(material?.length && { materials: { some: { slug: { in: material } } } }),
@@ -180,6 +185,16 @@ export async function getFeaturedProducts(limit: number): Promise<ProductListIte
     return products.map(mapProductForList);
 }
 
+export async function getNewProducts(limit: number): Promise<ProductListItem[]> {
+    const products = await prisma.product.findMany({
+        where: { isPublished: true, isNew: true },
+        select: productListSelect,
+        orderBy: { createdAt: "desc" },
+        take: limit,
+    });
+    return products.map(mapProductForList);
+}
+
 export async function getHeroProduct(): Promise<ProductListItem | null> {
     const featured = await prisma.product.findMany({
         where: { isPublished: true, isFeatured: true },
@@ -196,6 +211,21 @@ export async function getHeroProduct(): Promise<ProductListItem | null> {
         take: 1,
     });
     return fallback.length > 0 ? mapProductForList(fallback[0]) : null;
+}
+
+export async function getRoomsWithProductCount(slugs: string[]): Promise<RoomWithProductCount[]> {
+    const rooms = await prisma.room.findMany({
+        where: { slug: { in: slugs } },
+        select: { slug: true, name: true, _count: { select: { products: { where: { isPublished: true } } } } },
+    });
+    return rooms.map((room) => ({ slug: room.slug, name: room.name, productCount: room._count.products }));
+}
+
+export async function getCollectionsBySlugs(slugs: string[]): Promise<CollectionSummary[]> {
+    return prisma.collection.findMany({
+        where: { slug: { in: slugs } },
+        select: { slug: true, name: true },
+    });
 }
 
 export async function getProductSuggestions(q: string): Promise<SuggestionsResponse> {
@@ -235,8 +265,13 @@ export async function getProductFilterOptions(): Promise<ProductFilterOptions> {
     const attributeSelect = { id: true, slug: true, name: true } as const;
     const publishedProductFilter = { products: { some: { isPublished: true } } };
 
-    const [categories, rooms, styles, materials, colors, priceAggregate] = await Promise.all([
+    const [categories, collections, rooms, styles, materials, colors, priceAggregate] = await Promise.all([
         prisma.category.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
+        prisma.collection.findMany({
+            where: publishedProductFilter,
+            select: attributeSelect,
+            orderBy: { name: "asc" },
+        }),
         prisma.room.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
         prisma.style.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
         prisma.material.findMany({ where: publishedProductFilter, select: attributeSelect, orderBy: { name: "asc" } }),
@@ -254,6 +289,7 @@ export async function getProductFilterOptions(): Promise<ProductFilterOptions> {
 
     return {
         categories,
+        collections,
         rooms,
         styles,
         materials,

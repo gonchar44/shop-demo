@@ -31,6 +31,7 @@ export const productListSearchParamsSchema = z.object({
         .optional()
         .transform((v) => v || undefined),
     category: slugListSchema,
+    collection: slugListSchema,
     room: slugListSchema,
     style: slugListSchema,
     material: slugListSchema,
