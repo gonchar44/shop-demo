@@ -140,6 +140,7 @@ const products = [
         images: ["https://placehold.co/800x800?text=Stoneware+Bud+Vase"],
         thumbnail: "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-3/cream-paper-transparent.png",
         stock: 58,
+        isNew: true,
         isFeatured: true,
         rating: 4.9,
         reviewCount: 33,
