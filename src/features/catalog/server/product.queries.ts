@@ -185,6 +185,16 @@ export async function getFeaturedProducts(limit: number): Promise<ProductListIte
     return products.map(mapProductForList);
 }
 
+export async function getNewProducts(limit: number): Promise<ProductListItem[]> {
+    const products = await prisma.product.findMany({
+        where: { isPublished: true, isNew: true },
+        select: productListSelect,
+        orderBy: { createdAt: "desc" },
+        take: limit,
+    });
+    return products.map(mapProductForList);
+}
+
 export async function getHeroProduct(): Promise<ProductListItem | null> {
     const featured = await prisma.product.findMany({
         where: { isPublished: true, isFeatured: true },
