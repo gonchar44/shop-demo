@@ -223,7 +223,7 @@ export async function getRoomsWithProductCount(slugs: string[]): Promise<RoomWit
 
 export async function getCollectionsBySlugs(slugs: string[]): Promise<CollectionSummary[]> {
     return prisma.collection.findMany({
-        where: { slug: { in: slugs } },
+        where: { slug: { in: slugs }, products: { some: { isPublished: true } } },
         select: { slug: true, name: true },
     });
 }
