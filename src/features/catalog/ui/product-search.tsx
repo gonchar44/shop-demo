@@ -76,7 +76,7 @@ export function ProductSearch({ className = "w-96", autoFocus = false }: Product
     function handleProductSelect(slug: string) {
         setIsOpen(false);
         setFocusedIndex(-1);
-        router.push(`/catalog/${slug}`);
+        router.push(`/product/${slug}`);
     }
 
     function handleCategorySelect(slug: string) {

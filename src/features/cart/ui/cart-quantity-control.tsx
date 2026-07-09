@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { showToast } from "@/shared/lib/toast";
 import { Button } from "@/shared/ui/button";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { CART_MAX_ITEMS } from "@/features/cart/lib/cart.constants";
+import { useAddToCart } from "@/features/cart/lib/use-add-to-cart";
 import { cn } from "@/shared/lib/utils";
 
 type CartQuantityControlProps = {
@@ -21,15 +21,13 @@ const MotionButton = motion.create(Button);
 export function CartQuantityControl({ productId, stock, variant = "card", className }: CartQuantityControlProps) {
     const reduceMotion = useReducedMotion();
 
-    const quantity = useCartStore((s) => s.items.find((i) => i.id === productId)?.quantity ?? 0);
-    const cartCount = useCartStore((s) => s.items.length);
-    const addToCart = useCartStore((s) => s.addToCart);
+    const { quantity, isInCart, isOutOfStock, isAtStockLimit, handleAdd, handleIncrement } = useAddToCart(
+        productId,
+        stock,
+    );
     const updateQuantity = useCartStore((s) => s.updateQuantity);
     const removeFromCart = useCartStore((s) => s.removeFromCart);
 
-    const isOutOfStock = stock === 0;
-    const isInCart = quantity > 0;
-    const isAtStockLimit = quantity >= stock;
     const isPopoverVariant = variant === "popover";
 
     const isKeyboard = (event: MouseEvent) => event.detail === 0;
@@ -37,21 +35,8 @@ export function CartQuantityControl({ productId, stock, variant = "card", classN
         if (!isKeyboard(event)) event.currentTarget.blur();
     };
 
-    function handleAdd() {
-        if (isOutOfStock) return;
-        if (cartCount >= CART_MAX_ITEMS) {
-            showToast.custom("Cart is full — remove an item to add more", {
-                icon: <HandbagIcon className="size-4" />,
-            });
-            return;
-        }
-        addToCart(productId, stock);
-        showToast.custom("Added to cart", { icon: <HandbagIcon className="size-4" /> });
-    }
-
-    function handleIncrement(event: MouseEvent<HTMLButtonElement>) {
-        if (isAtStockLimit) return;
-        updateQuantity(productId, quantity + 1, stock);
+    function onIncrementClick(event: MouseEvent<HTMLButtonElement>) {
+        handleIncrement();
         releasePointerFocus(event);
     }
 
@@ -115,7 +100,7 @@ export function CartQuantityControl({ productId, stock, variant = "card", classN
                         </motion.span>
 
                         <StepButton
-                            onClick={handleIncrement}
+                            onClick={onIncrementClick}
                             disabled={isAtStockLimit}
                             label="Increase quantity"
                             isAlwaysVisible={isPopoverVariant}

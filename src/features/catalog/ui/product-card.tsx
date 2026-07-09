@@ -1,13 +1,12 @@
 "use client";
 
-import { BookmarkIcon } from "lucide-react";
-import { showToast } from "@/shared/lib/toast";
+import Link from "next/link";
 import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
-import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
+import { formatPrice } from "@/features/catalog/lib/price";
+import { BADGE_STYLES, resolveBadge } from "@/features/catalog/lib/product-badge";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
-import { WISHLIST_MAX_ITEMS } from "@/features/wishlist/lib/wishlist.constants";
-import { useWishlistStore } from "@/features/wishlist/store/wishlist.store";
+import { useWishlistToggle } from "@/features/wishlist/lib/use-wishlist-toggle";
 import { CartQuantityControl } from "@/features/cart/ui/cart-quantity-control";
 import { Badge } from "@/shared/ui/badge";
 import { cn } from "@/shared/lib/utils";
@@ -17,50 +16,19 @@ type ProductCardProps = {
     loading?: "eager" | "lazy";
 };
 
-type ProductBadge = { label: string; variant: "sale" | "new" | "featured" };
-
-function resolveBadge(product: ProductListItem): ProductBadge | null {
-    if (product.compareAtCents) {
-        const discountLabel = getDiscountPercent(product.priceCents, product.compareAtCents);
-        if (discountLabel) return { label: discountLabel, variant: "sale" };
-    }
-    if (product.isNew) return { label: "New", variant: "new" };
-    if (product.isFeatured) return { label: "Featured", variant: "featured" };
-    return null;
-}
-
-const BADGE_STYLES: Record<ProductBadge["variant"], string> = {
-    sale: "bg-gray-950 text-white",
-    new: "bg-orange-400/80 backdrop-blur-sm text-white",
-    featured: "bg-blue-400/80 backdrop-blur-sm text-white",
-};
-
 export function ProductCard({ product, loading }: ProductCardProps) {
     const { name, thumbnail, priceCents, compareAtCents, currency, category } = product;
     const badge = resolveBadge(product);
-    const isInWishlist = useWishlistStore((s) => s.items.some((i) => i.id === product.id));
-    const wishlistCount = useWishlistStore((s) => s.items.length);
-    const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
-
-    function handleWishlistToggle() {
-        if (!isInWishlist && wishlistCount >= WISHLIST_MAX_ITEMS) {
-            showToast.custom("Wishlist is full — remove an item to add more", {
-                icon: <BookmarkIcon className="size-4" fill="none" />,
-            });
-            return;
-        }
-        toggleWishlistItem(product.id);
-        showToast.custom(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
-            icon: <BookmarkIcon className="size-4" fill={isInWishlist ? "none" : "currentColor"} />,
-        });
-    }
+    const { isInWishlist, toggle: handleWishlistToggle } = useWishlistToggle(product.id);
 
     return (
-        <article className="group aspect-[3/4] relative w-full select-none" aria-label={name}>
+        <article className="group aspect-3/4 relative w-full select-none" aria-label={name}>
+            <Link href={`/product/${product.slug}`} className="absolute inset-0" aria-label={name} />
+
             {/* Image area */}
             <div
                 className={cn(
-                    "absolute inset-x-0 top-0 bottom-[120px] z-20 flex items-center justify-center p-4",
+                    "absolute inset-x-0 top-0 bottom-[120px] z-20 flex items-center justify-center p-4 pointer-events-none",
                     !thumbnail && "bottom-14",
                 )}
             >
@@ -77,12 +45,16 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                 />
             </div>
 
-            <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl">
-                <WishlistButton isInWishlist={isInWishlist} onToggle={handleWishlistToggle} />
+            <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl pointer-events-none">
+                <WishlistButton
+                    isInWishlist={isInWishlist}
+                    onToggle={handleWishlistToggle}
+                    className="pointer-events-auto"
+                />
             </div>
 
             {/* Info panel */}
-            <div className="flex flex-col z-30 items-end gap-y-1.5 absolute bottom-0 left-0 w-full">
+            <div className="flex flex-col z-30 items-end gap-y-1.5 absolute bottom-0 left-0 w-full pointer-events-none">
                 {badge && <Badge className={cn("z-10 mr-2", BADGE_STYLES[badge.variant])}>{badge.label}</Badge>}
 
                 <div className="bg-gray-950 rounded-3xl p-4 w-full">
@@ -105,7 +77,7 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                     <CartQuantityControl
                         productId={product.id}
                         stock={product.stock}
-                        className="absolute bottom-2 right-2"
+                        className="pointer-events-auto absolute bottom-2 right-2"
                     />
                 </div>
             </div>

@@ -166,6 +166,14 @@ export async function getProductList(params: ProductListParams): Promise<Product
     };
 }
 
+export async function getProductBySlug(slug: string): Promise<ProductListItem | null> {
+    const product = await prisma.product.findFirst({
+        where: { slug, isPublished: true },
+        select: productListSelect,
+    });
+    return product ? mapProductForList(product) : null;
+}
+
 export async function getProductsByIds(ids: string[]): Promise<ProductListItem[]> {
     if (ids.length === 0) return [];
     const products = await prisma.product.findMany({
