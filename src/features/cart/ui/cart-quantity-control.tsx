@@ -10,6 +10,7 @@ import { useAddToCart } from "@/features/cart/lib/use-add-to-cart";
 import { cn } from "@/shared/lib/utils";
 
 type CartQuantityControlProps = {
+    variantId: string;
     productId: string;
     stock: number;
     variant?: "card" | "popover";
@@ -18,10 +19,17 @@ type CartQuantityControlProps = {
 
 const MotionButton = motion.create(Button);
 
-export function CartQuantityControl({ productId, stock, variant = "card", className }: CartQuantityControlProps) {
+export function CartQuantityControl({
+    variantId,
+    productId,
+    stock,
+    variant = "card",
+    className,
+}: CartQuantityControlProps) {
     const reduceMotion = useReducedMotion();
 
     const { quantity, isInCart, isOutOfStock, isAtStockLimit, handleAdd, handleIncrement } = useAddToCart(
+        variantId,
         productId,
         stock,
     );
@@ -43,13 +51,13 @@ export function CartQuantityControl({ productId, stock, variant = "card", classN
     function handleDecrement(event: MouseEvent<HTMLButtonElement>) {
         if (quantity <= 1) {
             releasePointerFocus(event);
-            removeFromCart(productId);
+            removeFromCart(variantId);
             showToast.custom("Removed from cart", {
                 icon: <ShoppingCartIcon className="size-4" />,
             });
             return;
         }
-        updateQuantity(productId, quantity - 1, stock);
+        updateQuantity(variantId, quantity - 1, stock);
         releasePointerFocus(event);
     }
 

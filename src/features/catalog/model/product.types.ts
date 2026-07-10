@@ -39,6 +39,17 @@ export type ProductFilterOptions = {
     };
 };
 
+export type ProductVariantSummary = {
+    id: string;
+    name: string;
+    sku: string | null;
+    priceCents: number;
+    stock: number;
+    image: string | null;
+    color: ProductColor | null;
+    material: ProductAttribute | null;
+};
+
 export type ProductListItem = {
     id: string;
     slug: string;
@@ -48,7 +59,6 @@ export type ProductListItem = {
     compareAtCents: number | null;
     currency: string;
     thumbnail: string;
-    stock: number;
     isFeatured: boolean;
     isNew: boolean;
     rating: number | null;
@@ -57,8 +67,9 @@ export type ProductListItem = {
     collection: ProductAttribute | null;
     room: ProductAttribute | null;
     style: ProductAttribute | null;
-    colors: ProductColor[];
-    materials: ProductAttribute[];
+    variants: ProductVariantSummary[];
+    inStock: boolean;
+    fromPriceCents: number;
 };
 
 export type ProductListResponse = {

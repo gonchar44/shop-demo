@@ -40,7 +40,6 @@ model Color {
   slug     String           @unique
   name     String
   hex      String?
-  products Product[]
   variants ProductVariant[]
 }
 
@@ -48,7 +47,6 @@ model Material {
   id       String           @id @default(cuid())
   slug     String           @unique
   name     String
-  products Product[]
   variants ProductVariant[]
 }
 
@@ -96,8 +94,6 @@ model Product {
   room           Room?       @relation(fields: [roomId], references: [id])
   styleId        String?
   style          Style?           @relation(fields: [styleId], references: [id])
-  colors         Color[]
-  materials      Material[]
   variants       ProductVariant[]
   dimensions     String?
   weight         String?
@@ -105,7 +101,6 @@ model Product {
   images         String[]
   thumbnail      String
 
-  stock          Int      @default(0)
   isFeatured     Boolean  @default(false)
   isNew          Boolean  @default(false)
   isPublished    Boolean  @default(true)

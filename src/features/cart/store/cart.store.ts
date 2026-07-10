@@ -3,16 +3,17 @@ import { devtools, persist } from "zustand/middleware";
 import { CART_MAX_ITEMS } from "@/features/cart/lib/cart.constants";
 
 export type CartItem = {
-    id: string;
+    variantId: string;
+    productId: string;
     quantity: number;
     addedAt: number;
 };
 
 type CartStore = {
     items: CartItem[];
-    addToCart: (id: string, stock: number) => void;
-    removeFromCart: (id: string) => void;
-    updateQuantity: (id: string, quantity: number, stock: number) => void;
+    addToCart: (variantId: string, productId: string, stock: number) => void;
+    removeFromCart: (variantId: string) => void;
+    updateQuantity: (variantId: string, quantity: number, stock: number) => void;
     clearCart: () => void;
 };
 
@@ -22,34 +23,46 @@ export const useCartStore = create<CartStore>()(
             (set) => ({
                 items: [],
 
-                addToCart: (id, stock) =>
+                addToCart: (variantId, productId, stock) =>
                     set(
                         (state) => {
                             if (stock <= 0) return state;
-                            const existing = state.items.find((i) => i.id === id);
+                            const existing = state.items.find((i) => i.variantId === variantId);
                             if (existing) {
                                 return {
                                     items: state.items.map((i) =>
-                                        i.id === id ? { ...i, quantity: Math.min(i.quantity + 1, stock) } : i,
+                                        i.variantId === variantId
+                                            ? { ...i, quantity: Math.min(i.quantity + 1, stock) }
+                                            : i,
                                     ),
                                 };
                             }
                             if (state.items.length >= CART_MAX_ITEMS) return state;
-                            return { items: [...state.items, { id, quantity: 1, addedAt: Date.now() }] };
+                            return {
+                                items: [...state.items, { variantId, productId, quantity: 1, addedAt: Date.now() }],
+                            };
                         },
                         false,
                         "cart/addToCart",
                     ),
 
-                removeFromCart: (id) =>
-                    set((state) => ({ items: state.items.filter((i) => i.id !== id) }), false, "cart/removeFromCart"),
+                removeFromCart: (variantId) =>
+                    set(
+                        (state) => ({ items: state.items.filter((i) => i.variantId !== variantId) }),
+                        false,
+                        "cart/removeFromCart",
+                    ),
 
-                updateQuantity: (id, quantity, stock) =>
+                updateQuantity: (variantId, quantity, stock) =>
                     set(
                         (state) => {
                             if (stock <= 0) return state;
                             const clamped = Math.max(1, Math.min(quantity, stock));
-                            return { items: state.items.map((i) => (i.id === id ? { ...i, quantity: clamped } : i)) };
+                            return {
+                                items: state.items.map((i) =>
+                                    i.variantId === variantId ? { ...i, quantity: clamped } : i,
+                                ),
+                            };
                         },
                         false,
                         "cart/updateQuantity",
@@ -57,7 +70,9 @@ export const useCartStore = create<CartStore>()(
 
                 clearCart: () => set({ items: [] }, false, "cart/clearCart"),
             }),
-            { name: "cart" },
+            {
+                name: "cart",
+            },
         ),
         { name: "CartStore" },
     ),

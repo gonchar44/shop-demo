@@ -2,9 +2,8 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { AlertTriangleIcon, ShoppingCartIcon, XIcon } from "lucide-react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useCartStore } from "@/features/cart/store/cart.store";
-import { cartProductsQueryOptions } from "@/features/cart/api/cart-product-queries";
+import { useCartLines } from "@/features/cart/lib/use-cart-lines";
 import { CartPopoverItem } from "@/features/cart/ui/cart-popover-item";
 import { CartPopoverItemSkeleton } from "@/features/cart/ui/cart-popover-item-skeleton";
 import { CartPopoverFooter } from "@/features/cart/ui/cart-popover-footer";
@@ -14,35 +13,19 @@ import { PopoverClose } from "@/shared/ui/popover";
 import { showToast } from "@/shared/lib/toast";
 
 export function CartPopover() {
-    const items = useCartStore((s) => s.items);
     const removeFromCart = useCartStore((s) => s.removeFromCart);
 
-    const ids = items.map((i) => i.id);
-
     const {
-        data: products = [],
+        variantIds,
+        displayedLines,
+        subtotalCents,
+        currency,
+        lineCount,
         isLoading,
         isFetching,
         isPlaceholderData,
         isError,
-    } = useQuery({
-        ...cartProductsQueryOptions(ids),
-        placeholderData: ids.length > 0 ? keepPreviousData : undefined,
-    });
-
-    const itemMap = Object.fromEntries(items.map((i) => [i.id, i]));
-    const displayedProducts = products
-        .filter((p) => ids.includes(p.id))
-        .sort((a, b) => (itemMap[b.id]?.addedAt ?? 0) - (itemMap[a.id]?.addedAt ?? 0));
-
-    const count = items.length;
-
-    const subtotalCents = displayedProducts.reduce((sum, p) => {
-        const qty = itemMap[p.id]?.quantity ?? 1;
-        return sum + p.priceCents * qty;
-    }, 0);
-
-    const subtotalCurrency = displayedProducts[0]?.currency ?? "USD";
+    } = useCartLines();
 
     return (
         <motion.div
@@ -58,7 +41,7 @@ export function CartPopover() {
                 <div>
                     <p className="font-mono text-xs tracking-widest uppercase text-gray-400">Cart</p>
                     <AnimatePresence initial={false}>
-                        {count > 0 && (
+                        {lineCount > 0 && (
                             <motion.p
                                 key="count"
                                 className="text-lg font-bold text-gray-950 overflow-hidden"
@@ -67,7 +50,7 @@ export function CartPopover() {
                                 exit={{ opacity: 0, height: 0, y: -4 }}
                                 transition={{ duration: 0.2, ease: "easeOut" }}
                             >
-                                {count} item{count !== 1 ? "s" : ""}
+                                {lineCount} item{lineCount !== 1 ? "s" : ""}
                             </motion.p>
                         )}
                     </AnimatePresence>
@@ -90,7 +73,7 @@ export function CartPopover() {
             )}
 
             {/* Empty state */}
-            {displayedProducts.length === 0 && !isLoading && !isFetching && !isPlaceholderData && !isError && (
+            {displayedLines.length === 0 && !isLoading && !isFetching && !isPlaceholderData && !isError && (
                 <EmptyState
                     icon={<ShoppingCartIcon />}
                     heading="Your cart is empty"
@@ -100,19 +83,19 @@ export function CartPopover() {
             )}
 
             {/* List */}
-            {!isError && (isLoading || isFetching || displayedProducts.length > 0) && (
+            {!isError && (isLoading || isFetching || displayedLines.length > 0) && (
                 <ul className="flex-1 min-h-0 overflow-y-auto py-1.5 px-1">
-                    {isLoading || (isFetching && displayedProducts.length === 0)
-                        ? Array.from({ length: Math.max(ids.length, 1) }).map((_, index) => (
+                    {isLoading || (isFetching && displayedLines.length === 0)
+                        ? Array.from({ length: Math.max(variantIds.length, 1) }).map((_, index) => (
                               <CartPopoverItemSkeleton key={index} />
                           ))
-                        : displayedProducts.map((product, index) => (
+                        : displayedLines.map(({ line }, index) => (
                               <CartPopoverItem
-                                  key={product.id}
-                                  product={product}
+                                  key={line.variantId}
+                                  line={line}
                                   showTopBorder={index > 0}
                                   onRemove={() => {
-                                      removeFromCart(product.id);
+                                      removeFromCart(line.variantId);
                                       showToast.custom("Removed from cart", {
                                           icon: <ShoppingCartIcon className="size-4" />,
                                       });
@@ -123,9 +106,9 @@ export function CartPopover() {
             )}
 
             {/* Footer */}
-            {!isError && displayedProducts.length > 0 && !isLoading && (
+            {!isError && displayedLines.length > 0 && !isLoading && (
                 <div className="shrink-0">
-                    <CartPopoverFooter subtotalCents={subtotalCents} subtotalCurrency={subtotalCurrency} />
+                    <CartPopoverFooter subtotalCents={subtotalCents} subtotalCurrency={currency} />
                 </div>
             )}
         </motion.div>

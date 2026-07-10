@@ -1,24 +1,27 @@
-import type { ProductListItem } from "@/features/catalog/model/product.types";
+import type { CartLine } from "@/features/cart/model/cart-line.types";
+import { formatVariantLabel } from "@/features/cart/lib/variant-label";
 import { formatPrice } from "@/features/catalog/lib/price";
 import { cn } from "@/shared/lib/utils";
 import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 
 type CheckoutOrderSummaryItemProps = {
-    product: ProductListItem;
+    line: CartLine;
     quantity: number;
     showTopBorder: boolean;
 };
 
-export function CheckoutOrderSummaryItem({ product, quantity, showTopBorder }: CheckoutOrderSummaryItemProps) {
-    const lineTotalCents = product.priceCents * quantity;
-    const hasDiscount = product.compareAtCents !== null && product.compareAtCents > product.priceCents;
+export function CheckoutOrderSummaryItem({ line, quantity, showTopBorder }: CheckoutOrderSummaryItemProps) {
+    const { product } = line;
+    const variantLabel = formatVariantLabel(line);
+    const lineTotalCents = line.priceCents * quantity;
+    const hasDiscount = product.compareAtCents !== null && product.compareAtCents > line.priceCents;
     const compareAtLineTotalCents = hasDiscount ? product.compareAtCents! * quantity : null;
 
     return (
         <li className={cn("flex items-center gap-3 py-3.5", showTopBorder && "border-t border-gray-200")}>
             <div className="relative shrink-0 w-14 h-16 bg-gray-100 rounded-xl grid place-items-center">
                 <ImageWithFallback
-                    src={product.thumbnail}
+                    src={line.image}
                     alt={product.name}
                     width={40}
                     height={52}
@@ -37,6 +40,7 @@ export function CheckoutOrderSummaryItem({ product, quantity, showTopBorder }: C
                     {product.category.name}
                 </p>
                 <p className="text-sm font-medium text-gray-950 truncate leading-snug">{product.name}</p>
+                {variantLabel && <p className="text-xs text-gray-400 mt-0.5">{variantLabel}</p>}
                 {quantity > 1 && (
                     <p className="text-xs text-gray-400 mt-0.5">
                         {quantity} ×{" "}
@@ -45,7 +49,7 @@ export function CheckoutOrderSummaryItem({ product, quantity, showTopBorder }: C
                                 {formatPrice(product.compareAtCents!, product.currency)}
                             </span>
                         )}
-                        {formatPrice(product.priceCents, product.currency)}
+                        {formatPrice(line.priceCents, product.currency)}
                     </p>
                 )}
             </div>

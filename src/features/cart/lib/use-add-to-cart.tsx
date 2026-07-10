@@ -5,8 +5,8 @@ import { showToast } from "@/shared/lib/toast";
 import { useCartStore } from "@/features/cart/store/cart.store";
 import { CART_MAX_ITEMS } from "@/features/cart/lib/cart.constants";
 
-export function useAddToCart(productId: string, stock: number) {
-    const quantity = useCartStore((s) => s.items.find((i) => i.id === productId)?.quantity ?? 0);
+export function useAddToCart(variantId: string, productId: string, stock: number) {
+    const quantity = useCartStore((s) => s.items.find((i) => i.variantId === variantId)?.quantity ?? 0);
     const cartCount = useCartStore((s) => s.items.length);
     const addToCart = useCartStore((s) => s.addToCart);
     const updateQuantity = useCartStore((s) => s.updateQuantity);
@@ -23,13 +23,13 @@ export function useAddToCart(productId: string, stock: number) {
             });
             return;
         }
-        addToCart(productId, stock);
+        addToCart(variantId, productId, stock);
         showToast.custom("Added to cart", { icon: <HandbagIcon className="size-4" /> });
     }
 
     function handleIncrement() {
         if (isAtStockLimit) return;
-        updateQuantity(productId, quantity + 1, stock);
+        updateQuantity(variantId, quantity + 1, stock);
     }
 
     return { quantity, isInCart, isOutOfStock, isAtStockLimit, handleAdd, handleIncrement };

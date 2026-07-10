@@ -5,13 +5,15 @@ import { Button } from "@/shared/ui/button";
 import { useAddToCart } from "@/features/cart/lib/use-add-to-cart";
 
 type AddToCartButtonProps = {
+    variantId: string;
     productId: string;
     stock: number;
     className?: string;
 };
 
-export function AddToCartButton({ productId, stock, className }: AddToCartButtonProps) {
+export function AddToCartButton({ variantId, productId, stock, className }: AddToCartButtonProps) {
     const { quantity, isInCart, isOutOfStock, isAtStockLimit, handleAdd, handleIncrement } = useAddToCart(
+        variantId,
         productId,
         stock,
     );

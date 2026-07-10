@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { HandbagIcon } from "lucide-react";
 import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice } from "@/features/catalog/lib/price";
@@ -9,6 +10,7 @@ import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
 import { useWishlistToggle } from "@/features/wishlist/lib/use-wishlist-toggle";
 import { CartQuantityControl } from "@/features/cart/ui/cart-quantity-control";
 import { Badge } from "@/shared/ui/badge";
+import { Button, buttonVariants } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 type ProductCardProps = {
@@ -16,10 +18,21 @@ type ProductCardProps = {
     loading?: "eager" | "lazy";
 };
 
+const cardActionButtonClassName = cn(
+    "pointer-events-auto absolute bottom-2 right-2 bg-white",
+    "transition-colors duration-150 hover:bg-gray-100",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
+    "focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950",
+    "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent",
+);
+
 export function ProductCard({ product, loading }: ProductCardProps) {
-    const { name, thumbnail, priceCents, compareAtCents, currency, category } = product;
+    const { name, thumbnail, compareAtCents, currency, category } = product;
     const badge = resolveBadge(product);
     const { isInWishlist, toggle: handleWishlistToggle } = useWishlistToggle(product.id);
+
+    const hasVariedPricing = new Set(product.variants.map((v) => v.priceCents)).size > 1;
+    const soleVariant = product.variants.length === 1 ? product.variants[0] : undefined;
 
     return (
         <article className="group aspect-3/4 relative w-full select-none" aria-label={name}>
@@ -65,7 +78,8 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                     <div className="flex items-center justify-between mt-3 gap-2">
                         <div className="flex items-baseline gap-2 min-w-0">
                             <span className="text-white font-semibold text-sm shrink-0">
-                                {formatPrice(priceCents, currency)}
+                                {hasVariedPricing && "From "}
+                                {formatPrice(product.fromPriceCents, currency)}
                             </span>
                             {compareAtCents && (
                                 <span className="text-gray-500 text-xs line-through">
@@ -74,11 +88,42 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                             )}
                         </div>
                     </div>
-                    <CartQuantityControl
-                        productId={product.id}
-                        stock={product.stock}
-                        className="pointer-events-auto absolute bottom-2 right-2"
-                    />
+
+                    {!product.inStock ? (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-md"
+                            shape="circle"
+                            disabled={true}
+                            aria-label="Out of stock"
+                            title="Out of stock"
+                            className={cardActionButtonClassName}
+                        >
+                            <HandbagIcon className="size-5" strokeWidth={1.7} />
+                        </Button>
+                    ) : soleVariant ? (
+                        <CartQuantityControl
+                            variantId={soleVariant.id}
+                            productId={product.id}
+                            stock={soleVariant.stock}
+                            className="pointer-events-auto absolute bottom-2 right-2"
+                        />
+                    ) : (
+                        // TODO(quick-add-dialog): Step 6b replaces this navigation with a
+                        // quick-add dialog for picking color/material without leaving the page.
+                        <Link
+                            href={`/product/${product.slug}`}
+                            aria-label="Choose options"
+                            title="Choose options"
+                            className={cn(
+                                buttonVariants({ variant: "ghost", size: "icon-md", shape: "circle" }),
+                                cardActionButtonClassName,
+                            )}
+                        >
+                            <HandbagIcon className="size-5" strokeWidth={1.7} />
+                        </Link>
+                    )}
                 </div>
             </div>
         </article>
