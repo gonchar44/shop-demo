@@ -8,6 +8,7 @@ import { ProductColorPicker } from "@/features/product/ui/product-color-picker";
 import { ProductMaterialPicker } from "@/features/product/ui/product-material-picker";
 import { AddToCartButton } from "@/features/cart/ui/add-to-cart-button";
 import { CartQuantityControl } from "@/features/cart/ui/cart-quantity-control";
+import { ProductSpecs } from "@/features/product/ui/product-specs";
 
 type ProductPurchasePanelProps = {
     product: ProductListItem;
@@ -126,6 +127,14 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
                     className="flex-1"
                 />
             </div>
+
+            <ProductSpecs
+                dimensions={product.dimensions}
+                materialDetail={product.materialDetail}
+                bulbBase={product.bulbBase}
+                origin={product.origin}
+                weight={product.weight}
+            />
         </div>
     );
 }

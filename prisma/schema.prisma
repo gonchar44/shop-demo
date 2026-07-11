@@ -97,6 +97,9 @@ model Product {
   variants       ProductVariant[]
   dimensions     String?
   weight         String?
+  materialDetail String?
+  bulbBase       String?
+  origin         String?
 
   images         String[]
   thumbnail      String

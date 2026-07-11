@@ -63,6 +63,11 @@ export type ProductListItem = {
     isNew: boolean;
     rating: number | null;
     reviewCount: number;
+    dimensions: string | null;
+    weight: string | null;
+    materialDetail: string | null;
+    bulbBase: string | null;
+    origin: string | null;
     category: ProductAttribute;
     collection: ProductAttribute | null;
     room: ProductAttribute | null;
