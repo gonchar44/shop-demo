@@ -54,8 +54,10 @@ function mapVariantToCartLine(variant: VariantForCartLine): CartLine {
     };
 }
 
-export async function getCartLinesByVariantIds(ids: string[]): Promise<CartLine[]> {
-    if (ids.length === 0) return [];
+export async function getCartLinesByVariantIds(ids: string[]): Promise<{ lines: CartLine[]; missingIds: string[] }> {
+    if (ids.length === 0) return { lines: [], missingIds: [] };
     const variants = await findVariantsByIds(ids);
-    return variants.map(mapVariantToCartLine);
+    const foundIds = new Set(variants.map((v) => v.id));
+    const missingIds = ids.filter((id) => !foundIds.has(id));
+    return { lines: variants.map(mapVariantToCartLine), missingIds };
 }

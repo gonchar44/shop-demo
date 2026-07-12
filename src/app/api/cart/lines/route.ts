@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        const data = await getCartLinesByVariantIds(parsed.data);
-        return Response.json({ data });
+        const { lines, missingIds } = await getCartLinesByVariantIds(parsed.data);
+        return Response.json({ data: lines, missingIds });
     } catch (error) {
         console.error("Failed to fetch cart lines:", error);
         return Response.json({ error: "Failed to fetch cart lines" }, { status: 500 });

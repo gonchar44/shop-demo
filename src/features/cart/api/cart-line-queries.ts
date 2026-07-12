@@ -2,7 +2,8 @@ import { queryOptions } from "@tanstack/react-query";
 import { apiGet } from "@/shared/lib/api";
 import type { CartLine } from "@/features/cart/model/cart-line.types";
 
-type CartLinesResponse = { data: CartLine[] };
+type CartLinesResponse = { data: CartLine[]; missingIds: string[] };
+export type CartLinesResult = { lines: CartLine[]; missingIds: string[] };
 
 export const cartLineKeys = {
     all: ["cart-lines"] as const,
@@ -17,8 +18,8 @@ export function cartLinesQueryOptions(variantIds: string[]) {
     });
 }
 
-async function fetchCartLines(variantIds: string[]): Promise<CartLine[]> {
+async function fetchCartLines(variantIds: string[]): Promise<CartLinesResult> {
     const response = await apiGet<CartLinesResponse>(`/api/cart/lines?variantIds=${variantIds.join(",")}`);
     if (!response) throw new Error("Failed to fetch cart lines");
-    return response.data ?? [];
+    return { lines: response.data ?? [], missingIds: response.missingIds ?? [] };
 }
