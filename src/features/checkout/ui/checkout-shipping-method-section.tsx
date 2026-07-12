@@ -4,22 +4,35 @@ import { motion, AnimatePresence } from "motion/react";
 import type { CheckoutFormValues, ShippingOption } from "@/features/checkout/model/checkout.types";
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
 import { formatPrice } from "@/features/catalog/lib/price";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { cn } from "@/shared/lib/utils";
 
 type CheckoutShippingMethodSectionProps = {
     control: Control<CheckoutFormValues>;
     subtotalCents: number;
     shippingOptions: ShippingOption[];
+    isLoading: boolean;
 };
 
 export function CheckoutShippingMethodSection({
     control,
     subtotalCents,
     shippingOptions,
+    isLoading,
 }: CheckoutShippingMethodSectionProps) {
     const freeOption = shippingOptions.find(
         (o) => o.freeAboveSubtotalCents !== null && subtotalCents >= o.freeAboveSubtotalCents,
     );
+
+    if (isLoading) {
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {shippingOptions.map((option) => (
+                    <Skeleton key={option.methodId} className="h-24 rounded-2xl" />
+                ))}
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-3">

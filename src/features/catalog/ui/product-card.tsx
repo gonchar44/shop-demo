@@ -1,15 +1,16 @@
 "use client";
 
-import { BookmarkIcon } from "lucide-react";
-import { showToast } from "@/shared/lib/toast";
+import Link from "next/link";
+import { HandbagIcon } from "lucide-react";
 import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
-import { formatPrice, getDiscountPercent } from "@/features/catalog/lib/price";
+import { formatPrice } from "@/features/catalog/lib/price";
+import { BADGE_STYLES, resolveBadge } from "@/features/catalog/lib/product-badge";
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
-import { WISHLIST_MAX_ITEMS } from "@/features/wishlist/lib/wishlist.constants";
-import { useWishlistStore } from "@/features/wishlist/store/wishlist.store";
+import { useWishlistToggle } from "@/features/wishlist/lib/use-wishlist-toggle";
 import { CartQuantityControl } from "@/features/cart/ui/cart-quantity-control";
 import { Badge } from "@/shared/ui/badge";
+import { Button, buttonVariants } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 type ProductCardProps = {
@@ -17,50 +18,30 @@ type ProductCardProps = {
     loading?: "eager" | "lazy";
 };
 
-type ProductBadge = { label: string; variant: "sale" | "new" | "featured" };
-
-function resolveBadge(product: ProductListItem): ProductBadge | null {
-    if (product.compareAtCents) {
-        const discountLabel = getDiscountPercent(product.priceCents, product.compareAtCents);
-        if (discountLabel) return { label: discountLabel, variant: "sale" };
-    }
-    if (product.isNew) return { label: "New", variant: "new" };
-    if (product.isFeatured) return { label: "Featured", variant: "featured" };
-    return null;
-}
-
-const BADGE_STYLES: Record<ProductBadge["variant"], string> = {
-    sale: "bg-gray-950 text-white",
-    new: "bg-orange-400/80 backdrop-blur-sm text-white",
-    featured: "bg-blue-400/80 backdrop-blur-sm text-white",
-};
+const cardActionButtonClassName = cn(
+    "pointer-events-auto absolute bottom-2 right-2 bg-white",
+    "transition-colors duration-150 hover:bg-gray-100",
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
+    "focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950",
+    "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent",
+);
 
 export function ProductCard({ product, loading }: ProductCardProps) {
-    const { name, thumbnail, priceCents, compareAtCents, currency, category } = product;
+    const { name, thumbnail, compareAtCents, currency, category } = product;
     const badge = resolveBadge(product);
-    const isInWishlist = useWishlistStore((s) => s.items.some((i) => i.id === product.id));
-    const wishlistCount = useWishlistStore((s) => s.items.length);
-    const toggleWishlistItem = useWishlistStore((s) => s.toggleWishlistItem);
+    const { isInWishlist, toggle: handleWishlistToggle } = useWishlistToggle(product.id);
 
-    function handleWishlistToggle() {
-        if (!isInWishlist && wishlistCount >= WISHLIST_MAX_ITEMS) {
-            showToast.custom("Wishlist is full — remove an item to add more", {
-                icon: <BookmarkIcon className="size-4" fill="none" />,
-            });
-            return;
-        }
-        toggleWishlistItem(product.id);
-        showToast.custom(isInWishlist ? "Removed from wishlist" : "Added to wishlist", {
-            icon: <BookmarkIcon className="size-4" fill={isInWishlist ? "none" : "currentColor"} />,
-        });
-    }
+    const hasVariedPricing = new Set(product.variants.map((v) => v.priceCents)).size > 1;
+    const soleVariant = product.variants.length === 1 ? product.variants[0] : undefined;
 
     return (
-        <article className="group aspect-[3/4] relative w-full select-none" aria-label={name}>
+        <article className="group aspect-3/4 relative w-full select-none" aria-label={name}>
+            <Link href={`/product/${product.slug}`} className="absolute inset-0" aria-label={name} />
+
             {/* Image area */}
             <div
                 className={cn(
-                    "absolute inset-x-0 top-0 bottom-[120px] z-20 flex items-center justify-center p-4",
+                    "absolute inset-x-0 top-0 bottom-[120px] z-20 flex items-center justify-center p-4 pointer-events-none",
                     !thumbnail && "bottom-14",
                 )}
             >
@@ -77,12 +58,16 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                 />
             </div>
 
-            <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl">
-                <WishlistButton isInWishlist={isInWishlist} onToggle={handleWishlistToggle} />
+            <div className="h-5/6 absolute bottom-0 left-0 w-full bg-gray-100 rounded-3xl pointer-events-none">
+                <WishlistButton
+                    isInWishlist={isInWishlist}
+                    onToggle={handleWishlistToggle}
+                    className="pointer-events-auto"
+                />
             </div>
 
             {/* Info panel */}
-            <div className="flex flex-col z-30 items-end gap-y-1.5 absolute bottom-0 left-0 w-full">
+            <div className="flex flex-col z-30 items-end gap-y-1.5 absolute bottom-0 left-0 w-full pointer-events-none">
                 {badge && <Badge className={cn("z-10 mr-2", BADGE_STYLES[badge.variant])}>{badge.label}</Badge>}
 
                 <div className="bg-gray-950 rounded-3xl p-4 w-full">
@@ -93,7 +78,8 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                     <div className="flex items-center justify-between mt-3 gap-2">
                         <div className="flex items-baseline gap-2 min-w-0">
                             <span className="text-white font-semibold text-sm shrink-0">
-                                {formatPrice(priceCents, currency)}
+                                {hasVariedPricing && "From "}
+                                {formatPrice(product.fromPriceCents, currency)}
                             </span>
                             {compareAtCents && (
                                 <span className="text-gray-500 text-xs line-through">
@@ -102,11 +88,42 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                             )}
                         </div>
                     </div>
-                    <CartQuantityControl
-                        productId={product.id}
-                        stock={product.stock}
-                        className="absolute bottom-2 right-2"
-                    />
+
+                    {!product.inStock ? (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-md"
+                            shape="circle"
+                            disabled={true}
+                            aria-label="Out of stock"
+                            title="Out of stock"
+                            className={cardActionButtonClassName}
+                        >
+                            <HandbagIcon className="size-5" strokeWidth={1.7} />
+                        </Button>
+                    ) : soleVariant ? (
+                        <CartQuantityControl
+                            variantId={soleVariant.id}
+                            productId={product.id}
+                            stock={soleVariant.stock}
+                            className="pointer-events-auto absolute bottom-2 right-2"
+                        />
+                    ) : (
+                        // TODO(quick-add-dialog): Step 6b replaces this navigation with a
+                        // quick-add dialog for picking color/material without leaving the page.
+                        <Link
+                            href={`/product/${product.slug}`}
+                            aria-label="Choose options"
+                            title="Choose options"
+                            className={cn(
+                                buttonVariants({ variant: "ghost", size: "icon-md", shape: "circle" }),
+                                cardActionButtonClassName,
+                            )}
+                        >
+                            <HandbagIcon className="size-5" strokeWidth={1.7} />
+                        </Link>
+                    )}
                 </div>
             </div>
         </article>

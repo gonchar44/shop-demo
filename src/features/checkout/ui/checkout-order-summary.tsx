@@ -1,10 +1,8 @@
 "use client";
 
 import { useWatch } from "react-hook-form";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "motion/react";
-import { useCartStore } from "@/features/cart/store/cart.store";
-import { cartProductsQueryOptions } from "@/features/cart/api/cart-product-queries";
+import { useCartLines } from "@/features/cart/lib/use-cart-lines";
 import type { CheckoutFormValues, ShippingOption } from "@/features/checkout/model/checkout.types";
 import { formatPrice } from "@/features/catalog/lib/price";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -18,23 +16,7 @@ type CheckoutOrderSummaryProps = {
 export function CheckoutOrderSummary({ shippingOptions }: CheckoutOrderSummaryProps) {
     const selectedMethodId = useWatch<CheckoutFormValues, "shippingMethod">({ name: "shippingMethod" });
 
-    const items = useCartStore((s) => s.items);
-    const ids = items.map((i) => i.id);
-
-    const { data: products = [], isLoading } = useQuery({
-        ...cartProductsQueryOptions(ids),
-        placeholderData: ids.length > 0 ? keepPreviousData : undefined,
-    });
-
-    const itemMap = Object.fromEntries(items.map((i) => [i.id, i]));
-    const displayedProducts = products
-        .filter((p) => ids.includes(p.id))
-        .sort((a, b) => (itemMap[b.id]?.addedAt ?? 0) - (itemMap[a.id]?.addedAt ?? 0));
-
-    const subtotalCents = displayedProducts.reduce((sum, p) => {
-        const qty = itemMap[p.id]?.quantity ?? 1;
-        return sum + p.priceCents * qty;
-    }, 0);
+    const { variantIds, displayedLines, subtotalCents, currency, itemCount, isLoading } = useCartLines();
 
     const selectedOption = shippingOptions.find((o) => o.methodId === selectedMethodId);
     const shippingCostCents =
@@ -45,8 +27,6 @@ export function CheckoutOrderSummary({ shippingOptions }: CheckoutOrderSummaryPr
               : selectedOption.priceCents;
 
     const totalCents = subtotalCents + shippingCostCents;
-    const currency = displayedProducts[0]?.currency ?? "USD";
-    const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
     return (
         <div className="lg:sticky lg:top-24 h-fit lg:w-96 shrink-0">
@@ -68,7 +48,7 @@ export function CheckoutOrderSummary({ shippingOptions }: CheckoutOrderSummaryPr
                 <div className="px-6">
                     {isLoading ? (
                         <div className="flex flex-col pb-2">
-                            {Array.from({ length: Math.max(ids.length, 2) }).map((_, index) => (
+                            {Array.from({ length: Math.max(variantIds.length, 2) }).map((_, index) => (
                                 <div
                                     key={index}
                                     className={cn(
@@ -87,11 +67,11 @@ export function CheckoutOrderSummary({ shippingOptions }: CheckoutOrderSummaryPr
                         </div>
                     ) : (
                         <ul>
-                            {displayedProducts.map((product, index) => (
+                            {displayedLines.map(({ line, quantity }, index) => (
                                 <CheckoutOrderSummaryItem
-                                    key={product.id}
-                                    product={product}
-                                    quantity={itemMap[product.id]?.quantity ?? 1}
+                                    key={line.variantId}
+                                    line={line}
+                                    quantity={quantity}
                                     showTopBorder={index > 0}
                                 />
                             ))}
