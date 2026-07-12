@@ -175,10 +175,9 @@ const products = [
         materialDetail: "Linen-cotton blend",
         origin: "Woven in Lithuania",
         images: [
-            "https://placehold.co/800x800/f2ede3/31343c.png?text=Linen+Throw+Blanket+-+Front",
-            "https://placehold.co/800x800/e5ddcd/31343c.png?text=Linen+Throw+Blanket+-+Draped",
-            "https://placehold.co/800x800/d9cfb8/31343c.png?text=Linen+Throw+Blanket+-+Detail",
-            "https://placehold.co/800x800/ece2cc/31343c.png?text=Linen+Throw+Blanket+-+In+Room",
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-4/linen-throw-blanket-cream-linen-studio.png",
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-4/linen-throw-blanket-olive-cotton-studio.png",
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-4/linen-throw-blanket-sand-linen-studio.png",
         ],
         thumbnail:
             "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-4/linen-throw-blanket-cream-linen-transparent.png",
@@ -202,9 +201,8 @@ const products = [
         materialDetail: "Solid brass",
         origin: "Made in India",
         images: [
-            "https://placehold.co/800x800/eee6d8/31343c.png?text=Brass+Candle+Holder+-+Front",
-            "https://placehold.co/800x800/e0d5bd/31343c.png?text=Brass+Candle+Holder+-+Side",
-            "https://placehold.co/800x800/d4c6a4/31343c.png?text=Brass+Candle+Holder+-+Detail",
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-5/brass-candle-holder-black-steel-studio.png",
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-5/brass-candle-holder-brass-studio.png",
         ],
         thumbnail:
             "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-5/brass-candle-holder-black-steel-transparent.png",
@@ -228,10 +226,8 @@ const products = [
         materialDetail: "Solid oak",
         origin: "Made in Vietnam",
         images: [
-            "https://placehold.co/800x800/f0e9dc/31343c.png?text=Oak+Desk+Organizer+-+Front",
-            "https://placehold.co/800x800/e3d9c3/31343c.png?text=Oak+Desk+Organizer+-+Angle",
-            "https://placehold.co/800x800/d7cab0/31343c.png?text=Oak+Desk+Organizer+-+Detail",
-            "https://placehold.co/800x800/ecdfc2/31343c.png?text=Oak+Desk+Organizer+-+On+Desk",
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-6/oak-desk-organizer-oak.png",
+            "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-6/oak-desk-organizer-walnut.png",
         ],
         thumbnail:
             "https://lcl9hrkqlikhnwol.public.blob.vercel-storage.com/seed-product-6/oak-desk-organizer-oak-transparent.png",
