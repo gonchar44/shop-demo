@@ -23,7 +23,7 @@ export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
         formState: { errors, isSubmitting },
     } = useFormContext<CheckoutFormValues>();
 
-    const { subtotalCents } = useCartLines();
+    const { subtotalCents, isLoading: isCartLoading } = useCartLines();
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate={true} className="flex-1 min-w-0">
@@ -59,6 +59,7 @@ export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
                         control={control}
                         subtotalCents={subtotalCents}
                         shippingOptions={shippingOptions}
+                        isLoading={isCartLoading}
                     />
                 </motion.section>
             </div>
