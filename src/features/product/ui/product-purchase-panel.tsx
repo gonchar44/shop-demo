@@ -113,20 +113,24 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
             {isOutOfStock && <p className="text-sm font-medium text-gray-400">This combination is out of stock</p>}
             {!isOutOfStock && stock <= 5 && <p className="text-sm font-medium text-orange-600">Only {stock} left</p>}
 
-            <div className="flex items-center gap-3">
-                <CartQuantityControl
-                    variantId={selectedVariant?.id ?? product.id}
-                    productId={product.id}
-                    stock={stock}
-                    variant="popover"
-                />
-                <AddToCartButton
-                    variantId={selectedVariant?.id ?? product.id}
-                    productId={product.id}
-                    stock={stock}
-                    className="flex-1"
-                />
-            </div>
+            {selectedVariant ? (
+                <div className="flex items-center gap-3">
+                    <CartQuantityControl
+                        variantId={selectedVariant.id}
+                        productId={product.id}
+                        stock={stock}
+                        variant="popover"
+                    />
+                    <AddToCartButton
+                        variantId={selectedVariant.id}
+                        productId={product.id}
+                        stock={stock}
+                        className="flex-1"
+                    />
+                </div>
+            ) : (
+                <p className="text-sm font-medium text-gray-400">This product is currently unavailable</p>
+            )}
 
             <ProductSpecs
                 dimensions={product.dimensions}
