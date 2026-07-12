@@ -77,6 +77,10 @@ export type ProductListItem = {
     fromPriceCents: number;
 };
 
+export type ProductDetail = ProductListItem & {
+    images: string[];
+};
+
 export type ProductListResponse = {
     data: ProductListItem[];
     pagination: {

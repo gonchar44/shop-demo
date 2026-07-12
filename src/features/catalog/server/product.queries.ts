@@ -1,6 +1,7 @@
 import { prisma } from "@/shared/db/prisma";
 import type {
     CollectionSummary,
+    ProductDetail,
     ProductFilterOptions,
     ProductListItem,
     ProductListParams,
@@ -45,6 +46,11 @@ const productListSelect = {
             material: { select: { id: true, slug: true, name: true } },
         },
     },
+} as const;
+
+const productDetailSelect = {
+    ...productListSelect,
+    images: true,
 } as const;
 
 type ProductWhereParams = Pick<
@@ -189,6 +195,15 @@ function mapProductForList(product: ProductForList): ProductListItem {
     };
 }
 
+type ProductForDetail = Awaited<ReturnType<typeof prisma.product.findFirst<{ select: typeof productDetailSelect }>>>;
+
+function mapProductForDetail(product: NonNullable<ProductForDetail>): ProductDetail {
+    return {
+        ...mapProductForList(product),
+        images: product.images,
+    };
+}
+
 export async function getProductList(params: ProductListParams): Promise<ProductListResponse> {
     const { page, limit } = params;
     const skip = (page - 1) * limit;
@@ -212,12 +227,12 @@ export async function getProductList(params: ProductListParams): Promise<Product
     };
 }
 
-export async function getProductBySlug(slug: string): Promise<ProductListItem | null> {
+export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
     const product = await prisma.product.findFirst({
         where: { slug, isPublished: true },
-        select: productListSelect,
+        select: productDetailSelect,
     });
-    return product ? mapProductForList(product) : null;
+    return product ? mapProductForDetail(product) : null;
 }
 
 export async function getProductsByIds(ids: string[]): Promise<ProductListItem[]> {
