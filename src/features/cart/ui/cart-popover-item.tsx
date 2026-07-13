@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { XIcon } from "lucide-react";
 import type { CartLine } from "@/features/cart/model/cart-line.types";
 import { formatVariantLabel } from "@/features/cart/lib/variant-label";
@@ -26,7 +27,10 @@ export function CartPopoverItem({ line, showTopBorder, onRemove }: CartPopoverIt
             )}
         >
             {/* Thumbnail */}
-            <div className="w-18 h-22 bg-gray-100 rounded-xl grid place-items-center">
+            <Link
+                href={`/product/${product.slug}`}
+                className="w-18 h-22 bg-gray-100 rounded-xl grid place-items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950"
+            >
                 <ImageWithFallback
                     src={line.image}
                     alt={product.name}
@@ -35,25 +39,30 @@ export function CartPopoverItem({ line, showTopBorder, onRemove }: CartPopoverIt
                     className="object-contain"
                     iconClassName="size-5"
                 />
-            </div>
+            </Link>
 
             {/* Meta */}
             <div className="min-w-0 flex flex-col gap-1">
-                <p className="font-mono text-xs tracking-widest text-gray-400 uppercase leading-none">
-                    {product.category.name}
-                </p>
-                <p className="text-sm font-semibold text-gray-950 truncate leading-snug">{product.name}</p>
-                {variantLabel && <p className="text-xs text-gray-400 leading-none">{variantLabel}</p>}
-                <div className="flex items-baseline gap-1.5 mt-1">
-                    <span className="text-sm font-bold text-gray-950">
-                        {formatPrice(line.priceCents, product.currency)}
-                    </span>
-                    {product.compareAtCents !== null && product.compareAtCents > line.priceCents && (
-                        <span className="text-xs text-gray-400 line-through">
-                            {formatPrice(product.compareAtCents, product.currency)}
+                <Link
+                    href={`/product/${product.slug}`}
+                    className="min-w-0 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950"
+                >
+                    <p className="font-mono text-xs tracking-widest text-gray-400 uppercase leading-none">
+                        {product.category.name}
+                    </p>
+                    <p className="text-sm font-semibold text-gray-950 truncate leading-snug">{product.name}</p>
+                    {variantLabel && <p className="text-xs text-gray-400 leading-none">{variantLabel}</p>}
+                    <div className="flex items-baseline gap-1.5 mt-1">
+                        <span className="text-sm font-bold text-gray-950">
+                            {formatPrice(line.priceCents, product.currency)}
                         </span>
-                    )}
-                </div>
+                        {product.compareAtCents !== null && product.compareAtCents > line.priceCents && (
+                            <span className="text-xs text-gray-400 line-through">
+                                {formatPrice(product.compareAtCents, product.currency)}
+                            </span>
+                        )}
+                    </div>
+                </Link>
 
                 {/* Quantity stepper */}
                 <CartQuantityControl

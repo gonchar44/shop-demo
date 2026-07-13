@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { ArrowRightIcon, BookmarkIcon } from "lucide-react";
 import type { ProductListItem } from "@/features/catalog/model/product.types";
 import { formatPrice } from "@/features/catalog/lib/price";
-import { Button } from "@/shared/ui/button";
+import { Button, buttonVariants } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { ImageWithFallback } from "@/shared/ui/image-with-fallback";
 
@@ -62,17 +63,14 @@ export function WishlistPopoverItem({ product, showTopBorder, onToggle }: Wishli
                 >
                     <BookmarkIcon className="size-4" strokeWidth={1.7} fill="currentColor" />
                 </Button>
-                {/*TODO: implement link, now this button is still disabled*/}
-                <Button
-                    disabled={true}
-                    variant="outlined"
-                    size="icon-sm"
-                    shape="circle"
+                <Link
+                    href={`/product/${product.slug}`}
+                    className={cn(buttonVariants({ variant: "outlined", size: "icon-sm", shape: "circle" }))}
                     aria-label="View product"
                     title="View product"
                 >
                     <ArrowRightIcon className="size-4" strokeWidth={1.9} />
-                </Button>
+                </Link>
             </div>
         </li>
     );
