@@ -12,6 +12,7 @@ import { ProductSpecs } from "@/features/product/ui/product-specs";
 
 type ProductPurchasePanelProps = {
     product: ProductListItem;
+    showSpecs?: boolean;
 };
 
 function dedupeBySlug<T extends { slug: string }>(items: T[]): T[] {
@@ -23,7 +24,7 @@ function dedupeBySlug<T extends { slug: string }>(items: T[]): T[] {
     });
 }
 
-export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
+export function ProductPurchasePanel({ product, showSpecs = true }: ProductPurchasePanelProps) {
     const { variants } = product;
 
     const availableColors = useMemo(
@@ -132,13 +133,15 @@ export function ProductPurchasePanel({ product }: ProductPurchasePanelProps) {
                 <p className="text-sm font-medium text-gray-400">This product is currently unavailable</p>
             )}
 
-            <ProductSpecs
-                dimensions={product.dimensions}
-                materialDetail={product.materialDetail}
-                bulbBase={product.bulbBase}
-                origin={product.origin}
-                weight={product.weight}
-            />
+            {showSpecs && (
+                <ProductSpecs
+                    dimensions={product.dimensions}
+                    materialDetail={product.materialDetail}
+                    bulbBase={product.bulbBase}
+                    origin={product.origin}
+                    weight={product.weight}
+                />
+            )}
         </div>
     );
 }

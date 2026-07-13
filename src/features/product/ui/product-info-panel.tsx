@@ -15,7 +15,7 @@ export function ProductInfoPanel({ product }: ProductInfoPanelProps) {
     const tags = [product.room, product.style].filter((tag) => tag !== null);
 
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 max-w-md">
             <ProductHeader productId={product.id} category={product.category} collection={product.collection} />
 
             {badge && <Badge className={cn("w-fit", BADGE_STYLES[badge.variant])}>{badge.label}</Badge>}
