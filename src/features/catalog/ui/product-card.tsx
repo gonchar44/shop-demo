@@ -9,8 +9,9 @@ import { BADGE_STYLES, resolveBadge } from "@/features/catalog/lib/product-badge
 import { WishlistButton } from "@/features/wishlist/ui/wishlist-button";
 import { useWishlistToggle } from "@/features/wishlist/lib/use-wishlist-toggle";
 import { CartQuantityControl } from "@/features/cart/ui/cart-quantity-control";
+import { ProductQuickAddDialog } from "@/features/catalog/ui/product-quick-add-dialog";
 import { Badge } from "@/shared/ui/badge";
-import { Button, buttonVariants } from "@/shared/ui/button";
+import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 type ProductCardProps = {
@@ -110,19 +111,7 @@ export function ProductCard({ product, loading }: ProductCardProps) {
                             className="pointer-events-auto absolute bottom-2 right-2"
                         />
                     ) : (
-                        // TODO(quick-add-dialog): Step 6b replaces this navigation with a
-                        // quick-add dialog for picking color/material without leaving the page.
-                        <Link
-                            href={`/product/${product.slug}`}
-                            aria-label="Choose options"
-                            title="Choose options"
-                            className={cn(
-                                buttonVariants({ variant: "ghost", size: "icon-md", shape: "circle" }),
-                                cardActionButtonClassName,
-                            )}
-                        >
-                            <HandbagIcon className="size-5" strokeWidth={1.7} />
-                        </Link>
+                        <ProductQuickAddDialog product={product} triggerClassName={cardActionButtonClassName} />
                     )}
                 </div>
             </div>
