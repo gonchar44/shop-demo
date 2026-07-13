@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { CartLine } from "@/features/cart/model/cart-line.types";
 import { formatVariantLabel } from "@/features/cart/lib/variant-label";
 import { formatPrice } from "@/features/catalog/lib/price";
@@ -18,50 +19,57 @@ export function CheckoutOrderSummaryItem({ line, quantity, showTopBorder }: Chec
     const compareAtLineTotalCents = hasDiscount ? product.compareAtCents! * quantity : null;
 
     return (
-        <li className={cn("flex items-center gap-3 py-3.5", showTopBorder && "border-t border-gray-200")}>
-            <div className="relative shrink-0 w-14 h-16 bg-gray-100 rounded-xl grid place-items-center">
-                <ImageWithFallback
-                    src={line.image}
-                    alt={product.name}
-                    width={40}
-                    height={52}
-                    className="object-contain"
-                    iconClassName="size-5"
-                />
-                {quantity > 1 && (
-                    <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-gray-950 text-white text-xs font-bold grid place-items-center tabular-nums">
-                        {quantity}
-                    </span>
-                )}
-            </div>
+        <li className={cn(showTopBorder && "border-t border-gray-200")}>
+            <Link
+                href={`/product/${product.slug}`}
+                className="flex items-center gap-3 py-3.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-950"
+            >
+                <div className="relative shrink-0 w-14 h-16 bg-gray-100 rounded-xl grid place-items-center">
+                    <ImageWithFallback
+                        src={line.image}
+                        alt={product.name}
+                        width={40}
+                        height={52}
+                        className="object-contain"
+                        iconClassName="size-5"
+                    />
+                    {quantity > 1 && (
+                        <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-gray-950 text-white text-xs font-bold grid place-items-center tabular-nums">
+                            {quantity}
+                        </span>
+                    )}
+                </div>
 
-            <div className="flex-1 min-w-0">
-                <p className="font-mono text-xs tracking-widest text-gray-400 uppercase leading-none mb-0.5">
-                    {product.category.name}
-                </p>
-                <p className="text-sm font-medium text-gray-950 truncate leading-snug">{product.name}</p>
-                {variantLabel && <p className="text-xs text-gray-400 mt-0.5">{variantLabel}</p>}
-                {quantity > 1 && (
-                    <p className="text-xs text-gray-400 mt-0.5">
-                        {quantity} ×{" "}
-                        {hasDiscount && (
-                            <span className="line-through mr-1">
-                                {formatPrice(product.compareAtCents!, product.currency)}
-                            </span>
-                        )}
-                        {formatPrice(line.priceCents, product.currency)}
+                <div className="flex-1 min-w-0">
+                    <p className="font-mono text-xs tracking-widest text-gray-400 uppercase leading-none mb-0.5">
+                        {product.category.name}
                     </p>
-                )}
-            </div>
+                    <p className="text-sm font-medium text-gray-950 truncate leading-snug">{product.name}</p>
+                    {variantLabel && <p className="text-xs text-gray-400 mt-0.5">{variantLabel}</p>}
+                    {quantity > 1 && (
+                        <p className="text-xs text-gray-400 mt-0.5">
+                            {quantity} ×{" "}
+                            {hasDiscount && (
+                                <span className="line-through mr-1">
+                                    {formatPrice(product.compareAtCents!, product.currency)}
+                                </span>
+                            )}
+                            {formatPrice(line.priceCents, product.currency)}
+                        </p>
+                    )}
+                </div>
 
-            <div className="flex flex-col items-end shrink-0 tabular-nums">
-                {hasDiscount && (
-                    <span className="text-xs text-gray-400 line-through">
-                        {formatPrice(compareAtLineTotalCents!, product.currency)}
+                <div className="flex flex-col items-end shrink-0 tabular-nums">
+                    {hasDiscount && (
+                        <span className="text-xs text-gray-400 line-through">
+                            {formatPrice(compareAtLineTotalCents!, product.currency)}
+                        </span>
+                    )}
+                    <span className="text-sm font-bold text-gray-950">
+                        {formatPrice(lineTotalCents, product.currency)}
                     </span>
-                )}
-                <span className="text-sm font-bold text-gray-950">{formatPrice(lineTotalCents, product.currency)}</span>
-            </div>
+                </div>
+            </Link>
         </li>
     );
 }
