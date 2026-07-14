@@ -115,6 +115,12 @@ function buildProductWhere(params: ProductWhereParams) {
               }
             : {};
 
+    const variantFilter = {
+        ...(material?.length && { material: { slug: { in: material } } }),
+        ...(color?.length && { color: { slug: { in: color } } }),
+        ...(inStock && { stock: { gt: 0 } }),
+    };
+
     return {
         isPublished: true,
         ...searchFilter,
@@ -123,9 +129,7 @@ function buildProductWhere(params: ProductWhereParams) {
         ...(collection?.length && { collection: { is: { slug: { in: collection } } } }),
         ...(room?.length && { room: { is: { slug: { in: room } } } }),
         ...(style?.length && { style: { is: { slug: { in: style } } } }),
-        ...(material?.length && { variants: { some: { material: { slug: { in: material } } } } }),
-        ...(color?.length && { variants: { some: { color: { slug: { in: color } } } } }),
-        ...(inStock && { variants: { some: { stock: { gt: 0 } } } }),
+        ...(Object.keys(variantFilter).length > 0 && { variants: { some: variantFilter } }),
         ...(isNew && { isNew: true }),
         ...(onSale && { compareAtCents: { not: null, gt: prisma.product.fields.priceCents } }),
         ...(featured && { isFeatured: true }),
