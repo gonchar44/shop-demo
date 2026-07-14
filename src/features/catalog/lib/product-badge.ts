@@ -5,7 +5,7 @@ export type ProductBadge = { label: string; variant: "sale" | "new" | "featured"
 
 export function resolveBadge(product: ProductListItem): ProductBadge | null {
     if (product.compareAtCents) {
-        const discountLabel = getDiscountPercent(product.priceCents, product.compareAtCents);
+        const discountLabel = getDiscountPercent(product.fromPriceCents, product.compareAtCents);
         if (discountLabel) return { label: discountLabel, variant: "sale" };
     }
     if (product.isNew) return { label: "New", variant: "new" };
