@@ -1,10 +1,8 @@
 import type { SubmitHandler } from "react-hook-form";
 import { useFormContext } from "react-hook-form";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ArrowRightIcon } from "lucide-react";
 import { motion } from "motion/react";
-import { useCartStore } from "@/features/cart/store/cart.store";
-import { cartProductsQueryOptions } from "@/features/cart/api/cart-product-queries";
+import { useCartLines } from "@/features/cart/lib/use-cart-lines";
 import type { CheckoutFormValues, ShippingOption } from "@/features/checkout/model/checkout.types";
 import { CheckoutContactSection } from "@/features/checkout/ui/checkout-contact-section";
 import { CheckoutShippingAddressSection } from "@/features/checkout/ui/checkout-shipping-address-section";
@@ -25,20 +23,7 @@ export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
         formState: { errors, isSubmitting },
     } = useFormContext<CheckoutFormValues>();
 
-    const items = useCartStore((s) => s.items);
-    const ids = items.map((i) => i.id);
-
-    const { data: products = [] } = useQuery({
-        ...cartProductsQueryOptions(ids),
-        placeholderData: ids.length > 0 ? keepPreviousData : undefined,
-    });
-
-    const itemMap = Object.fromEntries(items.map((i) => [i.id, i]));
-    const subtotalCents = products.reduce((sum, p) => {
-        const item = itemMap[p.id];
-        if (!item) return sum;
-        return sum + p.priceCents * item.quantity;
-    }, 0);
+    const { subtotalCents, isLoading: isCartLoading } = useCartLines();
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate={true} className="flex-1 min-w-0">
@@ -74,6 +59,7 @@ export function CheckoutForm({ shippingOptions, onSubmit }: CheckoutFormProps) {
                         control={control}
                         subtotalCents={subtotalCents}
                         shippingOptions={shippingOptions}
+                        isLoading={isCartLoading}
                     />
                 </motion.section>
             </div>
